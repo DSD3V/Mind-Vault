@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "concurrently": "^6.5.1"
+  },
+  "name": "mind-vault",
+  "scripts": {
+    "backend": "npm start --prefix backend",
+    "frontend": "npm start --prefix frontend",
+    "heroku-postbuild": "npm i && npm run build --prefix frontend",
+    "postinstall": "cd backend && npm i && cd ../frontend && npm i --legacy-peer-deps",
+    "start": "concurrently \"npm run frontend\" \"npm run backend\""
+  },
+  "version": "1.0.0"
+}

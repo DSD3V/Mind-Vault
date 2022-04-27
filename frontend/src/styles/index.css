@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@900&family=Roboto&display=swap');
+
+body {
+  background-color: black;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  margin: 0;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  -webkit-font-smoothing: antialiased;
+}
+
+.dragIcon {
+  color: #a1a1a1;
+  cursor: grab;
+  opacity: 0.8;
+  transition: 0.35s;
+}
+
+.dragIcon:focus {
+  outline: none;
+}
+
+.dragIcon:hover {
+  color: #a1a1a1;
+  opacity: 0.9;
+}
+
+.form-control-sm {
+  font-size: 0.8rem;
+}
+
+.g-sign-in-button {
+  background-color: #fff;
+  border-radius: 1px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+  color: #5f6368;
+  display: inline-block;
+  height: 50px;
+  margin: 10px;
+  transition: background-color 0.218s, border-color 0.218s, box-shadow 0.218s;
+  width: 240px;
+}
+
+.g-sign-in-button:hover {
+  box-shadow: 0 0 3px 3px rgba(66, 133, 244, 0.3);
+  cursor: pointer;
+  -webkit-box-shadow: 0 0 3px 3px rgba(66, 133, 244, 0.3);
+}
+
+.g-sign-in-button .content-wrapper {
+  border: 1px solid transparent;
+  height: 100%;
+  width: 100%;
+}
+
+.g-sign-in-button img {
+  height: 20px;
+  margin-top: -9px;
+  width: 20px;
+}
+
+.g-sign-in-button .logo-wrapper {
+  background: #fff;
+  border-radius: 1px;
+  display: inline-block;
+  height: 100%;
+  padding: 15px;
+  width: 48px;
+}
+
+.g-sign-in-button .text-container {
+  border: none;
+  display: inline-block;
+  font-family: Roboto, arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.21px;
+  line-height: 48px;
+  text-align: center;
+  width: 180px;
+  vertical-align: top;
+}

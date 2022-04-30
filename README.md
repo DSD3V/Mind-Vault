@@ -14,7 +14,7 @@
 - Drag and Drop
 - Input Validation
 - Image Uploading
-- Alerts/Modals
+- Alerts / Modals
 
 #### Technologies Used:
 

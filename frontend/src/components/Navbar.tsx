@@ -1,4 +1,4 @@
-import { ENTER_ROOT_VAULT } from '../actions/vaultActions';
+import { enterVault } from '../actions/vaultActions';
 import { logOut } from '../actions/userActions';
 import {
   selectUserEmail,
@@ -25,7 +25,7 @@ export const Navbar = ({
 
   return (
     <Nav>
-      <NavTitle onClick={() => dispatch(ENTER_ROOT_VAULT())}>
+      <NavTitle onClick={() => dispatch(enterVault({ isEnteringRoot: true }))}>
         Mind Vault
       </NavTitle>
       {isLoggedIn ? (

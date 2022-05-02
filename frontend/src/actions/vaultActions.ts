@@ -326,6 +326,30 @@ export const editVaults =
     });
   };
 
+export const enterVault =
+  ({
+    isEnteringRoot,
+    vaultToEnter,
+  }: {
+    isEnteringRoot?: boolean;
+    vaultToEnter?: VaultI;
+  }) =>
+  async (dispatch: Dispatch) => {
+    dispatch(CLEAR_ADD_VAULT_MESSAGES());
+    dispatch(CLEAR_DELETE_VAULT_MESSAGES());
+    dispatch(CLEAR_EDIT_VAULTS_MESSAGES());
+    dispatch(
+      isEnteringRoot ? ENTER_ROOT_VAULT() : ENTER_VAULT({ vaultToEnter })
+    );
+  };
+
+export const exitVault = () => async (dispatch: Dispatch) => {
+  dispatch(CLEAR_ADD_VAULT_MESSAGES());
+  dispatch(CLEAR_DELETE_VAULT_MESSAGES());
+  dispatch(CLEAR_EDIT_VAULTS_MESSAGES());
+  dispatch(EXIT_VAULT());
+};
+
 export const reorderVaults =
   ({ vaults }: { vaults: VaultI[] }) =>
   async (dispatch: Dispatch) => {

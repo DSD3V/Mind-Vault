@@ -11,7 +11,7 @@ import {
   CLEAR_DELETE_VAULT_MESSAGES,
   CLEAR_EDIT_VAULTS_MESSAGES,
   editVaults,
-  EXIT_VAULT,
+  exitVault,
   reorderVaults,
 } from '../actions/vaultActions';
 import { ThoughtI, VaultEditRequestI, VaultI } from '../interfaces';
@@ -157,10 +157,7 @@ export const VaultNavbar = ({
       <Div $d='column' $j='space-between'>
         <Div $a='start' $j='space-between' $m='12px 0 0 0'>
           {!isEditingThoughts && !isEditingVaults && !isRootVault ? (
-            <Button
-              $w={NAV_BUTTON_WIDTH}
-              onClick={() => dispatch(EXIT_VAULT())}
-            >
+            <Button $w={NAV_BUTTON_WIDTH} onClick={() => dispatch(exitVault())}>
               Return to{' '}
               {parentVaultNames.length > 1
                 ? truncatedParentVaultName

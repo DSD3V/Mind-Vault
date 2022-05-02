@@ -14,7 +14,7 @@ import {
 } from '@dnd-kit/sortable';
 import { SetStateAction, useEffect, useState } from 'react';
 
-import { ENTER_VAULT, REORDER_VAULTS_IN_STATE } from '../actions/vaultActions';
+import { enterVault, REORDER_VAULTS_IN_STATE } from '../actions/vaultActions';
 import { EditVaultForm } from './EditVaultForm';
 import { VaultEditRequestI, VaultI } from '../interfaces';
 import { NewVaultForm } from './NewVaultForm';
@@ -130,7 +130,7 @@ export const VaultsGrid = ({
           {vaults.map((vault: VaultI) => (
             <VaultCell
               key={vault.vaultId}
-              onClick={() => dispatch(ENTER_VAULT({ vaultToEnter: vault }))}
+              onClick={() => dispatch(enterVault({ vaultToEnter: vault }))}
             >
               <VaultTitle>{vault.name}</VaultTitle>
               {!!vault.imageUrl ? (

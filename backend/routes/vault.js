@@ -60,15 +60,16 @@ router.patch('/reorderVaults', async (req, res) => {
 router.post('/addVault', async (req, res) => {
   const { imageUrl, name, orderIndex, parentVaultId, userId } = req.query;
   const newVaultId = userId + '-' + Date.now();
+  const escapedName = name.replace(/'/g, '&apos;');
 
   try {
     await session.run(
       parentVaultId
         ? `MATCH (vault: Vault)
            WHERE vault.vaultId = '${parentVaultId}'
-           CREATE (newVault: Vault {imageUrl: '${imageUrl}', name: '${name}', orderIndex: '${orderIndex}',
+           CREATE (newVault: Vault {imageUrl: '${imageUrl}', name: '${escapedName}', orderIndex: '${orderIndex}',
                    userId: '${userId}', vaultId: '${newVaultId}'})<-[:IS_PARENT_VAULT_OF]-(vault)`
-        : `CREATE (vault: Vault {imageUrl: '${imageUrl}', name: '${name}', orderIndex: '${orderIndex}',
+        : `CREATE (vault: Vault {imageUrl: '${imageUrl}', name: '${escapedName}', orderIndex: '${orderIndex}',
                    userId: '${userId}', vaultId: '${newVaultId}'})<-[:IS_PARENT_VAULT_OF]-(vault)`
     );
     const newVault = new Vault({

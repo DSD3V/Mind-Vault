@@ -49,7 +49,10 @@ router.post('/addThought', async (req, res) => {
     await session.run(
       `MATCH (vault:Vault)
        WHERE vault.vaultId = '${vaultId}'
-       CREATE (thought: Thought {html: '${newThoughtHTML}', orderIndex: '${orderIndex}',
+       CREATE (thought: Thought {html: '${newThoughtHTML.replace(
+         /'/g,
+         '&apos;'
+       )}', orderIndex: '${orderIndex}',
                thoughtId: '${newThoughtId}'})<-[:CONTAINS_THOUGHT]-(vault)`
     );
     const newThought = new Thought({

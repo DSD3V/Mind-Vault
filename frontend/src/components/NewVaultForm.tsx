@@ -1,13 +1,8 @@
-import {
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { addVault, CLEAR_ADD_VAULT_MESSAGES } from '../actions/vaultActions';
+import { IMAGE_FILE_ERROR_MESSAGE, REQUIRED_ERROR_MESSAGE, VAULT_NAME_EXISTS_ERROR_MESSAGE } from '../constants';
 import defaultVaultImgUrl from '../images/vaultPic.jpg';
 import { selectUserId } from '../selectors/userSelectors';
 import {
@@ -17,21 +12,10 @@ import {
 } from '../selectors/vaultSelectors';
 import { useAppDispatch, useAppSelector } from '../store';
 import { ErrorMessage2, SuccessMessage2 } from '../styles/FormStyles';
-import { Button, Div, EmptySpan, NameInputField } from '../styles/GlobalStyles';
-import {
-  EditVaultCell,
-  EditVaultImage,
-  EmptyVaultImage,
-  VaultImageFileInput,
-  VaultImageText,
-} from '../styles/VaultStyles';
-import {
-  IMAGE_FILE_ERROR_MESSAGE,
-  REQUIRED_ERROR_MESSAGE,
-  VAULT_NAME_EXISTS_ERROR_MESSAGE,
-} from '../constants';
+import { Button, Div, EmptySpan, FileInput, NameInputField } from '../styles/GlobalStyles';
+import { EditVaultCell, EditVaultImage, EmptyVaultImage, VaultImageText } from '../styles/VaultStyles';
 
-const defaultNewVaultFormValues = {
+const defaultFormValues = {
   didNewVaultNameChange: false,
   newVaultImgFile: null,
   newVaultName: '',
@@ -47,7 +31,7 @@ export const NewVaultForm = ({
   vaultNames,
 }: {
   parentVaultId: string;
-  setVaultNames: React.Dispatch<SetStateAction<{ [key: string]: string }>>;
+  setVaultNames: Dispatch<SetStateAction<{ [key: string]: string }>>;
   vaultNames: { [key: string]: string };
 }) => {
   const {
@@ -57,30 +41,22 @@ export const NewVaultForm = ({
     setValue,
     watch,
   } = useForm({
-    defaultValues: defaultNewVaultFormValues,
+    defaultValues: defaultFormValues,
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
 
   const dispatch = useAppDispatch();
   const addingVaultErrorMessage = useAppSelector(selectAddingVaultErrorMessage);
-  const addingVaultSuccessMessage = useAppSelector(
-    selectAddingVaultSuccessMessage
-  );
+  const addingVaultSuccessMessage = useAppSelector(selectAddingVaultSuccessMessage);
   const isAddingVault = useAppSelector(selectIsAddingVault);
   const userId = useAppSelector(selectUserId);
 
-  const [defaultVaultImageFile, setDefaultVaultImageFile] = useState(
-    {} as File
-  );
-  const [newVaultImageErrorMessage, setNewVaultImageErrorMessage] =
-    useState('');
+  const [defaultVaultImageFile, setDefaultVaultImageFile] = useState({} as File);
+  const [newVaultImageErrorMessage, setNewVaultImageErrorMessage] = useState('');
   const [addedVaultName, setAddedVaultName] = useState('');
 
-  const isAddNewVaultDisabled =
-    isAddingVault ||
-    !!Object.keys(errors).length ||
-    !Object.keys(dirtyFields).length;
+  const isAddNewVaultDisabled = isAddingVault || !!Object.keys(errors).length || !Object.keys(dirtyFields).length;
   const newVaultName = watch('newVaultName');
   const didNewVaultNameChange = watch('didNewVaultNameChange');
 
@@ -104,10 +80,7 @@ export const NewVaultForm = ({
     if (!!addingVaultSuccessMessage && newVaultName === addedVaultName) {
       setValue('newVaultName', '');
     }
-    if (
-      didNewVaultNameChange &&
-      (!!addingVaultErrorMessage || !!addingVaultSuccessMessage)
-    ) {
+    if (didNewVaultNameChange && (!!addingVaultErrorMessage || !!addingVaultSuccessMessage)) {
       clearNewVaultMessages();
     }
   }, [
@@ -127,13 +100,7 @@ export const NewVaultForm = ({
   }, [newVaultName, setValue]);
 
   const handleAddNewVaultClicked = handleSubmit(
-    async ({
-      newVaultImgFile,
-      newVaultName,
-    }: {
-      newVaultImgFile: File | null;
-      newVaultName: string;
-    }) => {
+    async ({ newVaultImgFile, newVaultName }: { newVaultImgFile: File | null; newVaultName: string }) => {
       if (isAddNewVaultDisabled) {
         return;
       }
@@ -152,21 +119,13 @@ export const NewVaultForm = ({
     }
   );
 
-  const handleInputChange = ({
-    target: { value },
-  }: {
-    target: { value: string };
-  }) =>
+  const handleInputChange = ({ target: { value } }: { target: { value: string } }) =>
     setVaultNames((prevVaultNames: { [key: string]: string }) => ({
       ...prevVaultNames,
       newVault: value,
     }));
 
-  const handleUploadFile = ({
-    target: { files },
-  }: {
-    target: { files: FileList | null };
-  }) => {
+  const handleUploadFile = ({ target: { files } }: { target: { files: FileList | null } }) => {
     if (!(files![0].type.slice(0, 5) === 'image')) {
       setNewVaultImageErrorMessage(IMAGE_FILE_ERROR_MESSAGE);
     } else {
@@ -178,38 +137,30 @@ export const NewVaultForm = ({
 
   return (
     <EditVaultCell>
-      <NameInputField
-        {...register('newVaultName', {
-          onChange: handleInputChange,
-          required: {
-            message: REQUIRED_ERROR_MESSAGE,
-            value: true,
-          },
-          validate: (value: string) =>
-            !(
-              Object.values(vaultNames).includes(value) &&
-              vaultNames.newVault !== value
-            ) || VAULT_NAME_EXISTS_ERROR_MESSAGE,
-        })}
-        placeholder={'New Vault Name (Required)'}
-      />
-      <ErrorMessage2>
-        {errors.newVaultName ? (
-          errors.newVaultName.message
+      <Div $d="column">
+        <NameInputField
+          {...register('newVaultName', {
+            onChange: handleInputChange,
+            required: {
+              message: REQUIRED_ERROR_MESSAGE,
+              value: true,
+            },
+            validate: (value: string) =>
+              !(Object.values(vaultNames).includes(value) && vaultNames.newVault !== value) ||
+              VAULT_NAME_EXISTS_ERROR_MESSAGE,
+          })}
+          placeholder={'New Vault Name (Required)'}
+        />
+        <ErrorMessage2>
+          {errors.newVaultName ? errors.newVaultName.message : <EmptySpan>&nbsp;</EmptySpan>}
+        </ErrorMessage2>
+        {watch('newVaultImgFile') ? (
+          <EditVaultImage src={URL.createObjectURL(watch('newVaultImgFile')!)} />
         ) : (
-          <EmptySpan>&nbsp;</EmptySpan>
+          <EmptyVaultImage />
         )}
-      </ErrorMessage2>
-      {watch('newVaultImgFile') ? (
-        <EditVaultImage src={URL.createObjectURL(watch('newVaultImgFile')!)} />
-      ) : (
-        <EmptyVaultImage />
-      )}
-      <VaultImageFileInput
-        accept='image/*'
-        onChange={handleUploadFile}
-        type='file'
-      />
+        <FileInput accept="image/*" onChange={handleUploadFile} type="file" />
+      </Div>
       <Div>
         <VaultImageText
           onClick={() => {
@@ -237,13 +188,11 @@ export const NewVaultForm = ({
           <EmptySpan>&nbsp;</EmptySpan>
         )}
       </Div>
-      <Div $d='column'>
+      <Div $d="column">
         <Div>
           <Button
             $isDisabled={isAddNewVaultDisabled}
-            onClick={
-              isAddNewVaultDisabled ? () => {} : handleAddNewVaultClicked
-            }
+            onClick={isAddNewVaultDisabled ? () => {} : handleAddNewVaultClicked}
           >
             {isAddingVault ? 'Adding New Vault...' : 'Add New Vault'}
           </Button>

@@ -15,7 +15,7 @@ import {
   SIGN_UP_STARTED,
   SIGN_UP_SUCCEEDED,
 } from '../actions/userActions';
-import { UserI } from '../interfaces';
+import { UserStateI } from '../interfaces';
 
 const initialState = {
   errorMessage: '',
@@ -26,17 +26,11 @@ const initialState = {
     token: localStorage.getItem('token'),
     userId: '',
   },
-} as {
-  errorMessage: string;
-  isLoading: boolean;
-  isSignUpLoading: boolean;
-  successMessage: '';
-  userData: UserI;
-};
+} as UserStateI;
 
-export const userReducer = createReducer(initialState, builder => {
+export const userReducer = createReducer(initialState, (builder) => {
   builder
-    .addCase(CLEAR_FORM, state => {
+    .addCase(CLEAR_FORM, (state) => {
       state.errorMessage = '';
       state.isLoading = false;
       state.successMessage = '';
@@ -48,7 +42,7 @@ export const userReducer = createReducer(initialState, builder => {
       state.isLoading = false;
     })
 
-    .addCase(LOG_IN_STARTED, state => {
+    .addCase(LOG_IN_STARTED, (state) => {
       state.errorMessage = '';
       state.isLoading = true;
     })
@@ -70,12 +64,12 @@ export const userReducer = createReducer(initialState, builder => {
       state.isLoading = false;
     })
 
-    .addCase(LOG_OUT_STARTED, state => {
+    .addCase(LOG_OUT_STARTED, (state) => {
       state.errorMessage = '';
       state.isLoading = true;
     })
 
-    .addCase(LOG_OUT_SUCCEEDED, state => {
+    .addCase(LOG_OUT_SUCCEEDED, (state) => {
       localStorage.removeItem('token');
       state.errorMessage = '';
       state.isLoading = false;
@@ -88,7 +82,7 @@ export const userReducer = createReducer(initialState, builder => {
       state.isLoading = false;
     })
 
-    .addCase(RESET_PASSWORD_STARTED, state => {
+    .addCase(RESET_PASSWORD_STARTED, (state) => {
       state.errorMessage = '';
       state.isLoading = true;
     })
@@ -106,7 +100,7 @@ export const userReducer = createReducer(initialState, builder => {
       state.isSignUpLoading = false;
     })
 
-    .addCase(SIGN_UP_STARTED, state => {
+    .addCase(SIGN_UP_STARTED, (state) => {
       state.errorMessage = '';
       state.isSignUpLoading = true;
     })

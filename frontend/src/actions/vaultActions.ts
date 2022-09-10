@@ -1,42 +1,25 @@
-import { createAction, Dispatch } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { SetStateAction } from 'react';
+import { Dispatch as ReactDispatch, SetStateAction } from 'react';
+import { createAction, Dispatch } from '@reduxjs/toolkit';
 
 import { bucket, imageUrlRoot } from '../aws';
 import { VaultEditRequestI, VaultI } from '../interfaces';
 
-export const ADD_VAULT_FAILED = createAction(
-  'ADD_VAULT_FAILED',
-  ({ errorMessage }: { errorMessage: string }) => ({
-    payload: { errorMessage },
-  })
-);
+export const ADD_VAULT_FAILED = createAction('ADD_VAULT_FAILED', ({ errorMessage }: { errorMessage: string }) => ({
+  payload: { errorMessage },
+}));
 export const ADD_VAULT_STARTED = createAction('ADD_VAULT_STARTED');
 export const ADD_VAULT_SUCCEEDED = createAction(
   'ADD_VAULT_SUCCEEDED',
-  ({
-    newVault,
-    successMessage,
-  }: {
-    newVault: VaultI;
-    successMessage: string;
-  }) => ({
+  ({ newVault, successMessage }: { newVault: VaultI; successMessage: string }) => ({
     payload: { newVault, successMessage },
   })
 );
 
-export const CLEAR_ADD_VAULT_MESSAGES = createAction(
-  'CLEAR_ADD_VAULT_MESSAGES'
-);
-export const CLEAR_DELETE_VAULT_MESSAGES = createAction(
-  'CLEAR_DELETE_VAULT_MESSAGES'
-);
-export const CLEAR_EDIT_VAULTS_MESSAGES = createAction(
-  'CLEAR_EDIT_VAULTS_MESSAGES'
-);
-export const CLEAR_REORDER_VAULTS_MESSAGES = createAction(
-  'CLEAR_REORDER_VAULTS_MESSAGES'
-);
+export const CLEAR_ADD_VAULT_MESSAGES = createAction('CLEAR_ADD_VAULT_MESSAGES');
+export const CLEAR_DELETE_VAULT_MESSAGES = createAction('CLEAR_DELETE_VAULT_MESSAGES');
+export const CLEAR_EDIT_VAULTS_MESSAGES = createAction('CLEAR_EDIT_VAULTS_MESSAGES');
+export const CLEAR_REORDER_VAULTS_MESSAGES = createAction('CLEAR_REORDER_VAULTS_MESSAGES');
 
 export const DELETE_VAULT_FAILED = createAction(
   'DELETE_VAULT_FAILED',
@@ -47,33 +30,18 @@ export const DELETE_VAULT_FAILED = createAction(
 export const DELETE_VAULT_STARTED = createAction('DELETE_VAULT_STARTED');
 export const DELETE_VAULT_SUCCEEDED = createAction(
   'DELETE_VAULT_SUCCEEDED',
-  ({
-    deletedVaultId,
-    successMessage,
-  }: {
-    deletedVaultId: string;
-    successMessage: string;
-  }) => ({
+  ({ deletedVaultId, successMessage }: { deletedVaultId: string; successMessage: string }) => ({
     payload: { deletedVaultId, successMessage },
   })
 );
 
-export const EDIT_VAULTS_FAILED = createAction(
-  'EDIT_VAULTS_FAILED',
-  ({ errorMessage }: { errorMessage: string }) => ({
-    payload: { errorMessage },
-  })
-);
+export const EDIT_VAULTS_FAILED = createAction('EDIT_VAULTS_FAILED', ({ errorMessage }: { errorMessage: string }) => ({
+  payload: { errorMessage },
+}));
 export const EDIT_VAULTS_STARTED = createAction('EDIT_VAULTS_STARTED');
 export const EDIT_VAULTS_SUCCEEDED = createAction(
   'EDIT_VAULTS_SUCCEEDED',
-  ({
-    successMessage,
-    vaultEditRequests,
-  }: {
-    successMessage: string;
-    vaultEditRequests: VaultEditRequestI[];
-  }) => ({
+  ({ successMessage, vaultEditRequests }: { successMessage: string; vaultEditRequests: VaultEditRequestI[] }) => ({
     payload: { successMessage, vaultEditRequests },
   })
 );
@@ -97,24 +65,19 @@ export const REORDER_VAULTS_IN_STATE = createAction(
   })
 );
 export const REORDER_VAULTS_STARTED = createAction('REORDER_VAULTS_STARTED');
-export const REORDER_VAULTS_SUCCEEDED = createAction(
-  'REORDER_VAULTS_SUCCEEDED'
-);
+export const REORDER_VAULTS_SUCCEEDED = createAction('REORDER_VAULTS_SUCCEEDED');
 
 const addVaultFailedMessage = 'Failed to add new vault.';
-const addVaultImageFailedMessage =
-  'Failed to add new vault: there was en error with the uploaded image.';
+const addVaultImageFailedMessage = 'Failed to add new vault: there was en error with the uploaded image.';
 const addVaultSucceededMessage = 'Vault added.';
 
 const deleteVaultFailedMessage = 'Failed to delete vault: an error occurred.';
 const deleteVaultSucceededMessage = 'Vault deleted.';
 
-const editVaultsFailedMessage =
-  'Failed to save vault changes: an error occurred.';
+const editVaultsFailedMessage = 'Failed to save vault changes: an error occurred.';
 const editVaultsSucceededMessage = 'Vault changes saved.';
 
-const reorderVaultsFailedMessage =
-  'Failed to reorder vaults: an error occured.';
+const reorderVaultsFailedMessage = 'Failed to reorder vaults: an error occured.';
 
 export const addVault =
   ({
@@ -129,7 +92,7 @@ export const addVault =
     newVaultName: string;
     orderIndex: number;
     parentVaultId: string;
-    setVaultNames: React.Dispatch<SetStateAction<{ [key: string]: string }>>;
+    setVaultNames: ReactDispatch<SetStateAction<{ [key: string]: string }>>;
     userId: string;
   }) =>
   async (dispatch: Dispatch) => {
@@ -142,47 +105,42 @@ export const addVault =
             Bucket: process.env.REACT_APP_S3_BUCKET || '',
             Key: newVaultImgFile.name,
           })
-          .on(
-            'httpUploadProgress',
-            async ({ loaded, total }: { loaded: number; total: number }) => {
-              if (Math.round((loaded / total) * 100) === 100) {
-                const imageUrl = imageUrlRoot + newVaultImgFile.name;
-                try {
-                  const {
-                    data: { newVault },
-                  } = await axios.post('/vault/addVault', null, {
-                    params: {
-                      imageUrl,
-                      name: newVaultName,
-                      orderIndex,
-                      parentVaultId,
-                      userId,
-                    },
-                  });
-                  setVaultNames(
-                    (prevVaultNames: { [key: string]: string }) => ({
-                      ...prevVaultNames,
-                      [newVault.vaultId]: newVault.name,
-                    })
-                  );
-                  dispatch(
-                    ADD_VAULT_SUCCEEDED({
-                      newVault,
-                      successMessage: addVaultSucceededMessage,
-                    })
-                  );
-                } catch (error) {
-                  console.error(error);
-                  dispatch(
-                    ADD_VAULT_FAILED({
-                      errorMessage: addVaultFailedMessage,
-                    })
-                  );
-                }
+          .on('httpUploadProgress', async ({ loaded, total }: { loaded: number; total: number }) => {
+            if (Math.round((loaded / total) * 100) === 100) {
+              const imageUrl = imageUrlRoot + newVaultImgFile.name;
+              try {
+                const {
+                  data: { newVault },
+                } = await axios.post('/vault/addVault', null, {
+                  params: {
+                    imageUrl,
+                    name: newVaultName,
+                    orderIndex,
+                    parentVaultId,
+                    userId,
+                  },
+                });
+                setVaultNames((prevVaultNames: { [key: string]: string }) => ({
+                  ...prevVaultNames,
+                  [newVault.vaultId]: newVault.name,
+                }));
+                dispatch(
+                  ADD_VAULT_SUCCEEDED({
+                    newVault,
+                    successMessage: addVaultSucceededMessage,
+                  })
+                );
+              } catch (error) {
+                console.error(error);
+                dispatch(
+                  ADD_VAULT_FAILED({
+                    errorMessage: addVaultFailedMessage,
+                  })
+                );
               }
             }
-          )
-          .send(error => {
+          })
+          .send((error) => {
             if (error) {
               console.error(error);
               dispatch(
@@ -231,7 +189,7 @@ export const deleteVault =
     setVaultNames,
     vaultToDeleteId,
   }: {
-    setVaultNames: React.Dispatch<SetStateAction<{ [key: string]: string }>>;
+    setVaultNames: ReactDispatch<SetStateAction<{ [key: string]: string }>>;
     vaultToDeleteId: string;
   }) =>
   async (dispatch: Dispatch) => {
@@ -247,11 +205,7 @@ export const deleteVault =
         })
       );
       setVaultNames((prevVaultNames: { [key: string]: string }) =>
-        Object.fromEntries(
-          Object.entries(prevVaultNames).filter(
-            ([key, _]) => key !== vaultToDeleteId
-          )
-        )
+        Object.fromEntries(Object.entries(prevVaultNames).filter(([key, _]) => key !== vaultToDeleteId))
       );
     } catch (error) {
       console.error(error);
@@ -269,30 +223,21 @@ export const editVaults =
       const { newImage } = editRequest;
       if (newImage instanceof File) {
         imageUploadPromises.push(
-          new Promise(resolve => {
+          new Promise((resolve) => {
             bucket
               .putObject({
                 Body: newImage,
                 Bucket: process.env.REACT_APP_S3_BUCKET || '',
                 Key: newImage.name,
               })
-              .on(
-                'httpUploadProgress',
-                async ({
-                  loaded,
-                  total,
-                }: {
-                  loaded: number;
-                  total: number;
-                }) => {
-                  if (Math.round((loaded / total) * 100) === 100) {
-                    const imageUrl = imageUrlRoot + newImage.name;
-                    vaultEditRequests[idx].newImage = imageUrl;
-                    resolve(null);
-                  }
+              .on('httpUploadProgress', async ({ loaded, total }: { loaded: number; total: number }) => {
+                if (Math.round((loaded / total) * 100) === 100) {
+                  const imageUrl = imageUrlRoot + newImage.name;
+                  vaultEditRequests[idx].newImage = imageUrl;
+                  resolve(null);
                 }
-              )
-              .send(error => {
+              })
+              .send((error) => {
                 if (error) {
                   console.error(error);
                   editRequest.newImage = null;
@@ -327,20 +272,12 @@ export const editVaults =
   };
 
 export const enterVault =
-  ({
-    isEnteringRoot,
-    vaultToEnter,
-  }: {
-    isEnteringRoot?: boolean;
-    vaultToEnter?: VaultI;
-  }) =>
+  ({ isEnteringRoot, vaultToEnter }: { isEnteringRoot?: boolean; vaultToEnter?: VaultI }) =>
   async (dispatch: Dispatch) => {
     dispatch(CLEAR_ADD_VAULT_MESSAGES());
     dispatch(CLEAR_DELETE_VAULT_MESSAGES());
     dispatch(CLEAR_EDIT_VAULTS_MESSAGES());
-    dispatch(
-      isEnteringRoot ? ENTER_ROOT_VAULT() : ENTER_VAULT({ vaultToEnter })
-    );
+    dispatch(isEnteringRoot ? ENTER_ROOT_VAULT() : ENTER_VAULT({ vaultToEnter }));
   };
 
 export const exitVault = () => async (dispatch: Dispatch) => {

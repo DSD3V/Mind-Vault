@@ -8,24 +8,15 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-} from '@dnd-kit/sortable';
-import { SetStateAction, useEffect, useState } from 'react';
+import { SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { enterVault, REORDER_VAULTS_IN_STATE } from '../actions/vaultActions';
 import { EditVaultForm } from './EditVaultForm';
 import { VaultEditRequestI, VaultI } from '../interfaces';
 import { NewVaultForm } from './NewVaultForm';
 import { useAppDispatch } from '../store';
-import {
-  EmptyVaultImage,
-  VaultCell,
-  VaultImage,
-  VaultsGridContainer,
-  VaultTitle,
-} from '../styles/VaultStyles';
+import { EmptyVaultImage, VaultCell, VaultImage, VaultsGridContainer, VaultTitle } from '../styles/VaultStyles';
 import { VaultsGridAlert } from './VaultsGridAlert';
 
 export const VaultsGrid = ({
@@ -40,17 +31,15 @@ export const VaultsGrid = ({
 }: {
   isEditingVaults: boolean;
   parentVaultId: string;
-  setHasReorderedVaults: React.Dispatch<SetStateAction<boolean>>;
-  setVaultEditErrors: React.Dispatch<SetStateAction<Set<string>>>;
-  setVaultEditRequests: React.Dispatch<SetStateAction<VaultEditRequestI[]>>;
-  setVaultNames: React.Dispatch<SetStateAction<{ [key: string]: string }>>;
+  setHasReorderedVaults: Dispatch<SetStateAction<boolean>>;
+  setVaultEditErrors: Dispatch<SetStateAction<Set<string>>>;
+  setVaultEditRequests: Dispatch<SetStateAction<VaultEditRequestI[]>>;
+  setVaultNames: Dispatch<SetStateAction<{ [key: string]: string }>>;
   vaultNames: { [key: string]: string };
   vaults: VaultI[];
 }) => {
   const dispatch = useAppDispatch();
-  const [sortableItems, setSortableItems] = useState(
-    vaults.map(vault => vault.vaultId)
-  );
+  const [sortableItems, setSortableItems] = useState(vaults.map((vault) => vault.vaultId));
   const [activeId, setActiveId] = useState(null);
   const sensors = useSensors(
     useSensor(KeyboardSensor, {
@@ -62,7 +51,7 @@ export const VaultsGrid = ({
   );
 
   useEffect(() => {
-    setSortableItems(vaults.map(vault => vault.vaultId));
+    setSortableItems(vaults.map((vault) => vault.vaultId));
   }, [vaults]);
 
   const handleDragEnd = (evt: any) => {
@@ -86,18 +75,10 @@ export const VaultsGrid = ({
       <VaultsGridAlert />
       {isEditing ? (
         <>
-          <NewVaultForm
-            parentVaultId={parentVaultId}
-            setVaultNames={setVaultNames}
-            vaultNames={vaultNames}
-          />
-          <DndContext
-            onDragEnd={handleDragEnd}
-            onDragStart={handleDragStart}
-            sensors={sensors}
-          >
+          <NewVaultForm parentVaultId={parentVaultId} setVaultNames={setVaultNames} vaultNames={vaultNames} />
+          <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
             <SortableContext items={sortableItems}>
-              {vaults.map(vault => (
+              {vaults.map((vault) => (
                 <EditVaultForm
                   handle={true}
                   isActive={activeId === vault.vaultId}
@@ -117,7 +98,7 @@ export const VaultsGrid = ({
                     setEditErrors={setVaultEditErrors}
                     setVaultEditRequests={setVaultEditRequests}
                     setVaultNames={setVaultNames}
-                    vault={vaults.find(vault => vault.vaultId === activeId)!}
+                    vault={vaults.find((vault) => vault.vaultId === activeId)!}
                     vaultNames={vaultNames}
                   />
                 ) : null}
@@ -128,16 +109,9 @@ export const VaultsGrid = ({
       ) : (
         <>
           {vaults.map((vault: VaultI) => (
-            <VaultCell
-              key={vault.vaultId}
-              onClick={() => dispatch(enterVault({ vaultToEnter: vault }))}
-            >
+            <VaultCell key={vault.vaultId} onClick={() => dispatch(enterVault({ vaultToEnter: vault }))}>
               <VaultTitle>{vault.name}</VaultTitle>
-              {!!vault.imageUrl ? (
-                <VaultImage src={vault.imageUrl} />
-              ) : (
-                <EmptyVaultImage />
-              )}
+              {!!vault.imageUrl ? <VaultImage src={vault.imageUrl} /> : <EmptyVaultImage />}
             </VaultCell>
           ))}
         </>

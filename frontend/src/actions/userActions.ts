@@ -1,4 +1,3 @@
-import { createAction, Dispatch } from '@reduxjs/toolkit';
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
@@ -7,61 +6,41 @@ import {
   signInWithPopup,
   signOut,
 } from 'firebase/auth';
+import { createAction, Dispatch } from '@reduxjs/toolkit';
 
 import { auth } from '../auth/firebase';
 
 export const CLEAR_FORM = createAction('CLEAR_FORM');
 
-export const LOG_IN_FAILED = createAction(
-  'LOG_IN_FAILED',
-  ({ errorMessage }) => ({
-    payload: { errorMessage },
-  })
-);
+export const LOG_IN_FAILED = createAction('LOG_IN_FAILED', ({ errorMessage }) => ({
+  payload: { errorMessage },
+}));
 export const LOG_IN_STARTED = createAction('LOG_IN_STARTED');
-export const LOG_IN_SUCCEEDED = createAction(
-  'LOG_IN_SUCCEEDED',
-  ({ userData }) => ({
-    payload: { userData },
-  })
-);
+export const LOG_IN_SUCCEEDED = createAction('LOG_IN_SUCCEEDED', ({ userData }) => ({
+  payload: { userData },
+}));
 
-export const LOG_OUT_FAILED = createAction(
-  'LOG_OUT_FAILED',
-  ({ errorMessage }) => ({
-    payload: { errorMessage },
-  })
-);
+export const LOG_OUT_FAILED = createAction('LOG_OUT_FAILED', ({ errorMessage }) => ({
+  payload: { errorMessage },
+}));
 export const LOG_OUT_STARTED = createAction('LOG_OUT_STARTED');
 export const LOG_OUT_SUCCEEDED = createAction('LOG_OUT_SUCCEEDED');
 
-export const RESET_PASSWORD_FAILED = createAction(
-  'RESET_PASSWORD_FAILED',
-  ({ errorMessage }) => ({
-    payload: { errorMessage },
-  })
-);
+export const RESET_PASSWORD_FAILED = createAction('RESET_PASSWORD_FAILED', ({ errorMessage }) => ({
+  payload: { errorMessage },
+}));
 export const RESET_PASSWORD_STARTED = createAction('RESET_PASSWORD_STARTED');
-export const RESET_PASSWORD_SUCCEEDED = createAction(
-  'RESET_PASSWORD_SUCCEEDED',
-  ({ successMessage }) => ({
-    payload: { successMessage },
-  })
-);
+export const RESET_PASSWORD_SUCCEEDED = createAction('RESET_PASSWORD_SUCCEEDED', ({ successMessage }) => ({
+  payload: { successMessage },
+}));
 
-export const SIGN_UP_FAILED = createAction(
-  'SIGN_UP_FAILED',
-  ({ errorMessage }) => ({
-    payload: { errorMessage },
-  })
-);
+export const SIGN_UP_FAILED = createAction('SIGN_UP_FAILED', ({ errorMessage }) => ({
+  payload: { errorMessage },
+}));
 export const SIGN_UP_STARTED = createAction('SIGN_UP_STARTED');
-export const SIGN_UP_SUCCEEDED = createAction(
-  'SIGN_UP_SUCCEEDED',
-  ({ userData }) => ({
-    payload: { userData },
-  })
-);
+export const SIGN_UP_SUCCEEDED = createAction('SIGN_UP_SUCCEEDED', ({ userData }) => ({
+  payload: { userData },
+}));
 
 export const logIn =
   ({ email, password }: { email: string; password: string }) =>

@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { ThoughtI, VaultEditRequestI, VaultI } from '../interfaces';
-import {
-  selectDidEditThoughts,
-  selectDidEnterOrExitVault,
-} from '../selectors/mindSelectors';
+import { selectDidEditThoughts, selectDidEnterOrExitVault } from '../selectors/mindSelectors';
 import { useAppSelector } from '../store';
 import { Container, Div } from '../styles/GlobalStyles';
 import { ThoughtsList } from './ThoughtsList';
@@ -16,58 +13,38 @@ export const Vault = ({ vault }: { vault: VaultI }) => {
   const [hasReorderedVaults, setHasReorderedVaults] = useState(false);
   const [isEditingThoughts, setIsEditingThoughts] = useState(false);
   const [isEditingVaults, setIsEditingVaults] = useState(false);
-  const [thoughtEditErrors, setThoughtEditErrors] = useState<Set<string>>(
-    new Set()
-  );
-  const [vaultEditRequests, setVaultEditRequests] = useState<
-    VaultEditRequestI[]
-  >([]);
-  const [vaultEditErrors, setVaultEditErrors] = useState<Set<string>>(
-    new Set()
-  );
+  const [thoughtEditErrors, setThoughtEditErrors] = useState<Set<string>>(new Set());
+  const [vaultEditRequests, setVaultEditRequests] = useState<VaultEditRequestI[]>([]);
+  const [vaultEditErrors, setVaultEditErrors] = useState<Set<string>>(new Set());
   const [editedThoughts, setEditedThoughts] = useState(vault.thoughts);
   const [thoughtIdToNewHTML, setThoughtIdToNewHTML] = useState(
-    vault.thoughts.reduce(
-      (accum: { [key: string]: string }, thought: ThoughtI) => {
-        accum[thought.thoughtId] = thought.html;
-        return accum;
-      },
-      {}
-    )
+    vault.thoughts.reduce((accum: { [key: string]: string }, thought: ThoughtI) => {
+      accum[thought.thoughtId] = thought.html;
+      return accum;
+    }, {})
   );
   const [vaultNames, setVaultNames] = useState(
-    vault.childVaults.reduce(
-      (accum: { [key: string]: string }, vault: VaultI) => {
-        accum[vault.vaultId] = vault.name;
-        return accum;
-      },
-      {}
-    )
+    vault.childVaults.reduce((accum: { [key: string]: string }, vault: VaultI) => {
+      accum[vault.vaultId] = vault.name;
+      return accum;
+    }, {})
   );
   const isRootVault = !vault.vaultId;
-  const [currentTab, setCurrentTab] = useState(
-    isRootVault ? 'vaults' : 'thoughts'
-  );
+  const [currentTab, setCurrentTab] = useState(isRootVault ? 'vaults' : 'thoughts');
   const didEditThoughts = useAppSelector(selectDidEditThoughts);
   const didEnterOrExitVault = useAppSelector(selectDidEnterOrExitVault);
 
-  useEffect(
-    () => setCurrentTab(isRootVault ? 'vaults' : 'thoughts'),
-    [isRootVault]
-  );
+  useEffect(() => setCurrentTab(isRootVault ? 'vaults' : 'thoughts'), [isRootVault]);
 
   useEffect(() => {
     if (didEnterOrExitVault) {
       setCurrentTab(isRootVault ? 'vaults' : 'thoughts');
       setEditedThoughts(vault.thoughts);
       setThoughtIdToNewHTML(
-        vault.thoughts.reduce(
-          (accum: { [key: string]: string }, thought: ThoughtI) => {
-            accum[thought.thoughtId] = thought.html;
-            return accum;
-          },
-          {}
-        )
+        vault.thoughts.reduce((accum: { [key: string]: string }, thought: ThoughtI) => {
+          accum[thought.thoughtId] = thought.html;
+          return accum;
+        }, {})
       );
     }
   }, [didEnterOrExitVault, isRootVault, vault.thoughts]);
@@ -76,13 +53,10 @@ export const Vault = ({ vault }: { vault: VaultI }) => {
     if (didEditThoughts) {
       setEditedThoughts(vault.thoughts);
       setThoughtIdToNewHTML(
-        vault.thoughts.reduce(
-          (accum: { [key: string]: string }, thought: ThoughtI) => {
-            accum[thought.thoughtId] = thought.html;
-            return accum;
-          },
-          {}
-        )
+        vault.thoughts.reduce((accum: { [key: string]: string }, thought: ThoughtI) => {
+          accum[thought.thoughtId] = thought.html;
+          return accum;
+        }, {})
       );
     }
   }, [didEditThoughts, vault.thoughts]);
@@ -100,7 +74,6 @@ export const Vault = ({ vault }: { vault: VaultI }) => {
         setHasReorderedVaults={setHasReorderedVaults}
         setIsEditingThoughts={setIsEditingThoughts}
         setIsEditingVaults={setIsEditingVaults}
-        setThoughtIdToNewHTML={setThoughtIdToNewHTML}
         setVaultEditRequests={setVaultEditRequests}
         setVaultNames={setVaultNames}
         thoughtEditErrors={thoughtEditErrors}
@@ -125,9 +98,8 @@ export const Vault = ({ vault }: { vault: VaultI }) => {
             vaultId={vault.vaultId}
           />
         ) : !vault.childVaults.length && !isEditingVaults && isRootVault ? (
-          <Div $f='1.2rem' $w='80%'>
-            Click "Add / Edit / Delete Vaults" in the top right corner to create
-            your first vault.
+          <Div $f="1.2rem" $w="80%">
+            Click "Add / Edit / Delete Vaults" in the top right corner to create your first vault.
           </Div>
         ) : (
           <VaultsGrid

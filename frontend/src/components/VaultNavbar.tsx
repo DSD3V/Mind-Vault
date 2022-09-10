@@ -1,4 +1,4 @@
-import { SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 
 import {
   CLEAR_ADD_THOUGHT_MESSAGES,
@@ -14,21 +14,14 @@ import {
   exitVault,
   reorderVaults,
 } from '../actions/vaultActions';
+import { MAX_PARENT_VAULT_NAME_CHARS, NAV_BUTTON_WIDTH } from '../constants';
 import { ThoughtI, VaultEditRequestI, VaultI } from '../interfaces';
 import { selectParentVaultNames } from '../selectors/mindSelectors';
 import { selectIsEditingThoughts } from '../selectors/thoughtSelectors';
 import { selectIsEditingVaults } from '../selectors/vaultSelectors';
 import { useAppDispatch, useAppSelector } from '../store';
 import { Button, Div } from '../styles/GlobalStyles';
-import {
-  VaultNav,
-  VaultNavDivider,
-  VaultNavLink,
-  VaultNavTitle,
-  VaultNavTitleDiv,
-} from '../styles/VaultStyles';
-
-const NAV_BUTTON_WIDTH = '210px';
+import { VaultNav, VaultNavDivider, VaultNavLink, VaultNavTitle, VaultNavTitleDiv } from '../styles/VaultStyles';
 
 export const VaultNavbar = ({
   currentTab,
@@ -41,7 +34,6 @@ export const VaultNavbar = ({
   setHasReorderedVaults,
   setIsEditingThoughts,
   setIsEditingVaults,
-  setThoughtIdToNewHTML,
   setVaultEditRequests,
   setVaultNames,
   thoughtEditErrors,
@@ -57,18 +49,13 @@ export const VaultNavbar = ({
   hasReorderedVaults: boolean;
   isEditingThoughts: boolean;
   isEditingVaults: boolean;
-  setCurrentTab: React.Dispatch<SetStateAction<string>>;
-  setHasEditedThoughts: React.Dispatch<SetStateAction<boolean>>;
-  setHasReorderedVaults: React.Dispatch<SetStateAction<boolean>>;
-  setIsEditingThoughts: (
-    callback: (isEditingThoughts: boolean) => boolean
-  ) => void;
+  setCurrentTab: Dispatch<SetStateAction<string>>;
+  setHasEditedThoughts: Dispatch<SetStateAction<boolean>>;
+  setHasReorderedVaults: Dispatch<SetStateAction<boolean>>;
+  setIsEditingThoughts: (callback: (isEditingThoughts: boolean) => boolean) => void;
   setIsEditingVaults: (callback: (isEditingVaults: boolean) => boolean) => void;
-  setThoughtIdToNewHTML: React.Dispatch<
-    SetStateAction<{ [key: string]: string }>
-  >;
-  setVaultEditRequests: React.Dispatch<SetStateAction<VaultEditRequestI[]>>;
-  setVaultNames: React.Dispatch<SetStateAction<{ [key: string]: string }>>;
+  setVaultEditRequests: Dispatch<SetStateAction<VaultEditRequestI[]>>;
+  setVaultNames: Dispatch<SetStateAction<{ [key: string]: string }>>;
   thoughtEditErrors: Set<string>;
   thoughtIdToNewHTML: { [key: string]: string };
   thoughts: ThoughtI[];
@@ -87,13 +74,15 @@ export const VaultNavbar = ({
   const isRootVault = !parentVaultNames.length;
 
   const truncatedParentVaultName =
-    (parentVaultNames[parentVaultNames.length - 1] || '').length > 16
-      ? parentVaultNames[parentVaultNames.length - 1].slice(0, 16) + '...'
+    (parentVaultNames[parentVaultNames.length - 1] || '').length > MAX_PARENT_VAULT_NAME_CHARS
+      ? parentVaultNames[parentVaultNames.length - 1].slice(0, MAX_PARENT_VAULT_NAME_CHARS) + '...'
       : parentVaultNames[parentVaultNames.length - 1];
 
   const parentVaultNamesString = parentVaultNames
     .map((vaultName: string) =>
-      vaultName.length <= 20 ? vaultName : vaultName.slice(0, 20) + '...'
+      vaultName.length <= MAX_PARENT_VAULT_NAME_CHARS
+        ? vaultName
+        : vaultName.slice(0, MAX_PARENT_VAULT_NAME_CHARS) + '...'
     )
     .join(' / ')
     .slice(2);
@@ -102,7 +91,7 @@ export const VaultNavbar = ({
     if (!hasThoughtErrors) {
       if (isEditingThoughts) {
         if (!!thoughts.length && hasEditedThoughts) {
-          const newThoughts = thoughts.map(thought => ({
+          const newThoughts = thoughts.map((thought) => ({
             ...thought,
             html: thoughtIdToNewHTML[thought.thoughtId],
           }));
@@ -118,7 +107,7 @@ export const VaultNavbar = ({
       } else {
         dispatch(CLEAR_EDIT_THOUGHTS_MESSAGES());
       }
-      setIsEditingThoughts(prevState => !prevState);
+      setIsEditingThoughts((prevState) => !prevState);
     }
   };
 
@@ -148,20 +137,17 @@ export const VaultNavbar = ({
           }, {})
         );
       }
-      setIsEditingVaults(prevState => !prevState);
+      setIsEditingVaults((prevState) => !prevState);
     }
   };
 
   return (
     <VaultNav>
-      <Div $d='column' $j='space-between'>
-        <Div $a='start' $j='space-between' $m='12px 0 0 0'>
+      <Div $d="column" $j="space-between">
+        <Div $a="start" $j="space-between" $m="12px 0 0 0">
           {!isEditingThoughts && !isEditingVaults && !isRootVault ? (
             <Button $w={NAV_BUTTON_WIDTH} onClick={() => dispatch(exitVault())}>
-              Return to{' '}
-              {parentVaultNames.length > 1
-                ? truncatedParentVaultName
-                : 'Root Vaults'}
+              Return to {parentVaultNames.length > 1 ? truncatedParentVaultName : 'Root Vaults'}
             </Button>
           ) : (
             <Button $isHidden={true} $w={NAV_BUTTON_WIDTH} />
@@ -172,9 +158,7 @@ export const VaultNavbar = ({
               $w={NAV_BUTTON_WIDTH}
               onClick={toggleEditingThoughts}
             >
-              {isEditingThoughts
-                ? 'Done Adding / Editing / Deleting Thoughts'
-                : 'Add / Edit / Delete Thoughts'}
+              {isEditingThoughts ? 'Done Adding / Editing / Deleting Thoughts' : 'Add / Edit / Delete Thoughts'}
             </Button>
           ) : (
             <Button
@@ -194,9 +178,8 @@ export const VaultNavbar = ({
           {!isRootVault && (
             <>
               {!!parentVaultNames.length && (
-                <Div $f='1rem' $m='0 0 1px 0'>
-                  {parentVaultNamesString +
-                    (!!parentVaultNamesString.length ? ' / ' : '')}
+                <Div $f="1rem" $m="0 0 1px 0">
+                  {parentVaultNamesString + (!!parentVaultNamesString.length ? ' / ' : '')}
                 </Div>
               )}
               <VaultNavTitle>{vaultName}</VaultNavTitle>
@@ -204,18 +187,12 @@ export const VaultNavbar = ({
           )}
         </VaultNavTitleDiv>
         {!isRootVault && (
-          <Div $m='8px 0 8px 0'>
-            <VaultNavLink
-              $isSelected={currentTab === 'thoughts'}
-              onClick={() => setCurrentTab('thoughts')}
-            >
+          <Div $m="8px 0 8px 0">
+            <VaultNavLink $isSelected={currentTab === 'thoughts'} onClick={() => setCurrentTab('thoughts')}>
               Thoughts
             </VaultNavLink>
             <VaultNavDivider>|</VaultNavDivider>
-            <VaultNavLink
-              $isSelected={currentTab === 'vaults'}
-              onClick={() => setCurrentTab('vaults')}
-            >
+            <VaultNavLink $isSelected={currentTab === 'vaults'} onClick={() => setCurrentTab('vaults')}>
               Vaults
             </VaultNavLink>
           </Div>

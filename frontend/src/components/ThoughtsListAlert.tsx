@@ -13,28 +13,15 @@ import { AlertDiv } from '../styles/GlobalStyles';
 
 export const ThoughtsListAlert = () => {
   const dispatch = useAppDispatch();
-  const deletingThoughtSuccessMessage = useAppSelector(
-    selectDeletingThoughtSuccessMessage
-  );
-  const editingThoughtsErrorMessage = useAppSelector(
-    selectEditingThoughtsErrorMessage
-  );
-  const editingThoughtsSuccessMessage = useAppSelector(
-    selectEditingThoughtsSuccessMessage
-  );
+  const deletingThoughtSuccessMessage = useAppSelector(selectDeletingThoughtSuccessMessage);
+  const editingThoughtsErrorMessage = useAppSelector(selectEditingThoughtsErrorMessage);
+  const editingThoughtsSuccessMessage = useAppSelector(selectEditingThoughtsSuccessMessage);
   const isSavingChanges = useAppSelector(selectIsEditingThoughts);
 
-  const [showDeletedThoughtSuccessAlert, setShowDeletedThoughtSuccessAlert] =
-    useState(!!deletingThoughtSuccessMessage);
-  const [showEditingErrorAlert, setShowEditingErrorAlert] = useState(
-    !!editingThoughtsErrorMessage
-  );
-  const [showSavingChangesAlert, setShowSavingChangesAlert] = useState(
-    !!isSavingChanges
-  );
-  const [showEditingSuccessAlert, setShowEditingSuccessAlert] = useState(
-    !!editingThoughtsSuccessMessage
-  );
+  const [showDeletedThoughtSuccessAlert, setShowDeletedThoughtSuccessAlert] = useState(!!deletingThoughtSuccessMessage);
+  const [showEditingErrorAlert, setShowEditingErrorAlert] = useState(!!editingThoughtsErrorMessage);
+  const [showSavingChangesAlert, setShowSavingChangesAlert] = useState(!!isSavingChanges);
+  const [showEditingSuccessAlert, setShowEditingSuccessAlert] = useState(!!editingThoughtsSuccessMessage);
 
   useEffect(() => {
     if (!!editingThoughtsErrorMessage) {
@@ -69,25 +56,20 @@ export const ThoughtsListAlert = () => {
         dismissible
         onClose={() => setShowDeletedThoughtSuccessAlert(false)}
         show={showEditingSuccessAlert || showSavingChangesAlert}
-        variant='info'
+        variant="info"
       >
         {showEditingSuccessAlert
           ? editingThoughtsSuccessMessage
           : showSavingChangesAlert && 'Saving thought changes...'}
       </Alert>
-      <Alert
-        dismissible
-        onClose={() => setShowEditingErrorAlert(false)}
-        show={showEditingErrorAlert}
-        variant='danger'
-      >
+      <Alert dismissible onClose={() => setShowEditingErrorAlert(false)} show={showEditingErrorAlert} variant="danger">
         {editingThoughtsErrorMessage}
       </Alert>
       <Alert
         dismissible
         onClose={() => setShowDeletedThoughtSuccessAlert(false)}
         show={showDeletedThoughtSuccessAlert}
-        variant='info'
+        variant="info"
       >
         {deletingThoughtSuccessMessage}
       </Alert>

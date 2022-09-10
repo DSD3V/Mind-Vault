@@ -49,19 +49,14 @@ router.post('/addThought', async (req, res) => {
     await session.run(
       `MATCH (vault:Vault)
        WHERE vault.vaultId = '${vaultId}'
-       CREATE (thought: Thought {html: '${newThoughtHTML.replace(
-         /'/g,
-         '&apos;'
-       )}', orderIndex: '${orderIndex}',
+       CREATE (thought: Thought {html: '${newThoughtHTML.replace(/'/g, '&apos;')}', orderIndex: '${orderIndex}',
                thoughtId: '${newThoughtId}'})<-[:CONTAINS_THOUGHT]-(vault)`
     );
     const newThought = new Thought({
       html: newThoughtHTML,
       thoughtId: newThoughtId,
     });
-    res
-      .status(200)
-      .json({ message: 'Thought successfully added.', newThought });
+    res.status(200).json({ message: 'Thought successfully added.', newThought });
   } catch (error) {
     res.status(400).json({ message: 'Failed to add thought.', error });
   }

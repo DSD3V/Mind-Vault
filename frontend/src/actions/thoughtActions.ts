@@ -1,38 +1,23 @@
-import { createAction, Dispatch } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { SetStateAction } from 'react';
+import { Dispatch as ReactDispatch, SetStateAction } from 'react';
+import { createAction, Dispatch } from '@reduxjs/toolkit';
 
 import { ThoughtI } from '../interfaces';
 
-export const ADD_THOUGHT_FAILED = createAction(
-  'ADD_THOUGHT_FAILED',
-  ({ errorMessage }: { errorMessage: string }) => ({
-    payload: { errorMessage },
-  })
-);
+export const ADD_THOUGHT_FAILED = createAction('ADD_THOUGHT_FAILED', ({ errorMessage }: { errorMessage: string }) => ({
+  payload: { errorMessage },
+}));
 export const ADD_THOUGHT_STARTED = createAction('ADD_THOUGHT_STARTED');
 export const ADD_THOUGHT_SUCCEEDED = createAction(
   'ADD_THOUGHT_SUCCEEDED',
-  ({
-    newThought,
-    successMessage,
-  }: {
-    newThought: ThoughtI;
-    successMessage: string;
-  }) => ({
+  ({ newThought, successMessage }: { newThought: ThoughtI; successMessage: string }) => ({
     payload: { newThought, successMessage },
   })
 );
 
-export const CLEAR_ADD_THOUGHT_MESSAGES = createAction(
-  'CLEAR_ADD_THOUGHT_MESSAGES'
-);
-export const CLEAR_DELETE_THOUGHT_MESSAGES = createAction(
-  'CLEAR_DELETE_THOUGHT_MESSAGES'
-);
-export const CLEAR_EDIT_THOUGHTS_MESSAGES = createAction(
-  'CLEAR_EDIT_THOUGHTS_MESSAGES'
-);
+export const CLEAR_ADD_THOUGHT_MESSAGES = createAction('CLEAR_ADD_THOUGHT_MESSAGES');
+export const CLEAR_DELETE_THOUGHT_MESSAGES = createAction('CLEAR_DELETE_THOUGHT_MESSAGES');
+export const CLEAR_EDIT_THOUGHTS_MESSAGES = createAction('CLEAR_EDIT_THOUGHTS_MESSAGES');
 
 export const DELETE_THOUGHT_FAILED = createAction(
   'DELETE_THOUGHT_FAILED',
@@ -43,13 +28,7 @@ export const DELETE_THOUGHT_FAILED = createAction(
 export const DELETE_THOUGHT_STARTED = createAction('DELETE_THOUGHT_STARTED');
 export const DELETE_THOUGHT_SUCCEEDED = createAction(
   'DELETE_THOUGHT_SUCCEEDED',
-  ({
-    deletedThoughtId,
-    successMessage,
-  }: {
-    deletedThoughtId: string;
-    successMessage: string;
-  }) => ({
+  ({ deletedThoughtId, successMessage }: { deletedThoughtId: string; successMessage: string }) => ({
     payload: { deletedThoughtId, successMessage },
   })
 );
@@ -63,13 +42,7 @@ export const EDIT_THOUGHTS_FAILED = createAction(
 export const EDIT_THOUGHTS_STARTED = createAction('EDIT_THOUGHTS_STARTED');
 export const EDIT_THOUGHTS_SUCCEEDED = createAction(
   'EDIT_THOUGHTS_SUCCEEDED',
-  ({
-    successMessage,
-    thoughts,
-  }: {
-    successMessage: string;
-    thoughts: ThoughtI[];
-  }) => ({
+  ({ successMessage, thoughts }: { successMessage: string; thoughts: ThoughtI[] }) => ({
     payload: { successMessage, thoughts },
   })
 );
@@ -77,12 +50,10 @@ export const EDIT_THOUGHTS_SUCCEEDED = createAction(
 const addThoughtFailedMessage = 'Failed to add new thought.';
 const addThoughtSucceededMessage = 'Thought added.';
 
-const deleteThoughtFailedMessage =
-  'Failed to delete thought: an error occurred.';
+const deleteThoughtFailedMessage = 'Failed to delete thought: an error occurred.';
 const deleteThoughtSucceededMessage = 'Thought deleted.';
 
-const editThoughtsFailedMessage =
-  'Failed to save thought changes: an error occurred.';
+const editThoughtsFailedMessage = 'Failed to save thought changes: an error occurred.';
 const editThoughtsSucceededMessage = 'Thought changes saved.';
 
 export const addThought =
@@ -97,10 +68,8 @@ export const addThought =
   }: {
     newThoughtHTML: string;
     orderIndex: number;
-    setThoughtIdToNewHTML: React.Dispatch<
-      SetStateAction<{ [key: string]: string }>
-    >;
-    setThoughts: React.Dispatch<SetStateAction<ThoughtI[]>>;
+    setThoughtIdToNewHTML: ReactDispatch<SetStateAction<{ [key: string]: string }>>;
+    setThoughts: ReactDispatch<SetStateAction<ThoughtI[]>>;
     thoughtIdToNewHTML: { [key: string]: string };
     userId: string;
     vaultId: string;
@@ -118,20 +87,18 @@ export const addThought =
           vaultId,
         },
       });
-      setThoughts(prevThoughts => {
-        let thoughts = prevThoughts.map(thought => ({
+      setThoughts((prevThoughts) => {
+        let thoughts = prevThoughts.map((thought) => ({
           ...thought,
           html: thoughtIdToNewHTML[thought.thoughtId],
         }));
         thoughts.unshift(newThought);
         return thoughts;
       });
-      setThoughtIdToNewHTML(
-        (prevThoughtIdToNewHTML: { [key: string]: string }) => ({
-          ...prevThoughtIdToNewHTML,
-          [newThought.thoughtId]: newThoughtHTML,
-        })
-      );
+      setThoughtIdToNewHTML((prevThoughtIdToNewHTML: { [key: string]: string }) => ({
+        ...prevThoughtIdToNewHTML,
+        [newThought.thoughtId]: newThoughtHTML,
+      }));
       dispatch(
         ADD_THOUGHT_SUCCEEDED({
           newThought,
@@ -154,7 +121,7 @@ export const deleteThought =
     thoughtIdToNewHTML,
     thoughtToDeleteId,
   }: {
-    setThoughts: React.Dispatch<SetStateAction<ThoughtI[]>>;
+    setThoughts: ReactDispatch<SetStateAction<ThoughtI[]>>;
     thoughtIdToNewHTML: { [key: string]: string };
     thoughtToDeleteId: string;
   }) =>
@@ -164,10 +131,10 @@ export const deleteThought =
       await axios.delete('/thought/deleteThought', {
         data: { thoughtId: thoughtToDeleteId },
       });
-      setThoughts(prevThoughts =>
+      setThoughts((prevThoughts) =>
         prevThoughts
-          .filter(thought => thought.thoughtId !== thoughtToDeleteId)
-          .map(thought => ({
+          .filter((thought) => thought.thoughtId !== thoughtToDeleteId)
+          .map((thought) => ({
             ...thought,
             html: thoughtIdToNewHTML[thought.thoughtId],
           }))
@@ -180,9 +147,7 @@ export const deleteThought =
       );
     } catch (error) {
       console.error(error);
-      dispatch(
-        DELETE_THOUGHT_FAILED({ errorMessage: deleteThoughtFailedMessage })
-      );
+      dispatch(DELETE_THOUGHT_FAILED({ errorMessage: deleteThoughtFailedMessage }));
     }
   };
 

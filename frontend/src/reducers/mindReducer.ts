@@ -1,16 +1,8 @@
 import { arrayMove } from '@dnd-kit/sortable';
 import { createReducer } from '@reduxjs/toolkit';
 
-import {
-  GET_MIND_FAILED,
-  GET_MIND_STARTED,
-  GET_MIND_SUCCEEDED,
-} from '../actions/mindActions';
-import {
-  ADD_THOUGHT_SUCCEEDED,
-  DELETE_THOUGHT_SUCCEEDED,
-  EDIT_THOUGHTS_SUCCEEDED,
-} from '../actions/thoughtActions';
+import { GET_MIND_FAILED, GET_MIND_STARTED, GET_MIND_SUCCEEDED } from '../actions/mindActions';
+import { ADD_THOUGHT_SUCCEEDED, DELETE_THOUGHT_SUCCEEDED, EDIT_THOUGHTS_SUCCEEDED } from '../actions/thoughtActions';
 import { SIGN_UP_SUCCEEDED } from '../actions/userActions';
 import {
   ADD_VAULT_SUCCEEDED,
@@ -21,15 +13,7 @@ import {
   EXIT_VAULT,
   REORDER_VAULTS_IN_STATE,
 } from '../actions/vaultActions';
-import { ThoughtI, VaultEditRequestI, VaultI } from '../interfaces';
-
-interface StateI {
-  didEditThoughts: boolean;
-  didEnterOrExitVault: boolean;
-  errorMessage: string;
-  isLoading: boolean;
-  vaultStack: VaultI[];
-}
+import { MindStateI, ThoughtI, VaultEditRequestI, VaultI } from '../interfaces';
 
 const initialState = {
   didEditThoughts: false,
@@ -37,7 +21,7 @@ const initialState = {
   errorMessage: '',
   isLoading: false,
   vaultStack: [],
-} as StateI;
+} as MindStateI;
 
 const MIND_UPDATE_TYPES = {
   AddThought: 'Add Thought',
@@ -49,7 +33,7 @@ const MIND_UPDATE_TYPES = {
   ReorderVaults: 'Reorder Vaults',
 };
 
-export const mindReducer = createReducer(initialState, builder => {
+export const mindReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(ADD_THOUGHT_SUCCEEDED, (state, action) => {
       const { newThought } = action.payload;
@@ -116,7 +100,7 @@ export const mindReducer = createReducer(initialState, builder => {
       });
     })
 
-    .addCase(ENTER_ROOT_VAULT, state => {
+    .addCase(ENTER_ROOT_VAULT, (state) => {
       state.didEditThoughts = false;
       state.didEnterOrExitVault = true;
       state.vaultStack = state.vaultStack.slice(0, 1);
@@ -129,7 +113,7 @@ export const mindReducer = createReducer(initialState, builder => {
       state.vaultStack = [...state.vaultStack, vaultToEnter];
     })
 
-    .addCase(EXIT_VAULT, state => {
+    .addCase(EXIT_VAULT, (state) => {
       state.didEditThoughts = false;
       state.didEnterOrExitVault = true;
       state.vaultStack = state.vaultStack.slice(0, state.vaultStack.length - 1);
@@ -141,7 +125,7 @@ export const mindReducer = createReducer(initialState, builder => {
       state.isLoading = false;
     })
 
-    .addCase(GET_MIND_STARTED, state => {
+    .addCase(GET_MIND_STARTED, (state) => {
       state.errorMessage = '';
       state.isLoading = true;
     })
@@ -173,7 +157,7 @@ export const mindReducer = createReducer(initialState, builder => {
       });
     })
 
-    .addCase(SIGN_UP_SUCCEEDED, state => {
+    .addCase(SIGN_UP_SUCCEEDED, (state) => {
       state.errorMessage = '';
       state.isLoading = false;
       state.vaultStack = [
@@ -206,7 +190,7 @@ const updateMindHelper = ({
   newThought?: ThoughtI;
   newVault?: VaultI;
   oldIndex?: number;
-  state: StateI;
+  state: MindStateI;
   thoughts?: ThoughtI[];
   updateType: string;
   vaultEditRequests?: VaultEditRequestI[];
@@ -219,9 +203,9 @@ const updateMindHelper = ({
       break;
 
     case MIND_UPDATE_TYPES.DeleteThought:
-      state.vaultStack[vaultIdx].thoughts = state.vaultStack[
-        vaultIdx
-      ].thoughts.filter(thought => thought.thoughtId !== deletedThoughtId);
+      state.vaultStack[vaultIdx].thoughts = state.vaultStack[vaultIdx].thoughts.filter(
+        (thought) => thought.thoughtId !== deletedThoughtId
+      );
       break;
 
     case MIND_UPDATE_TYPES.EditThoughts:
@@ -234,36 +218,27 @@ const updateMindHelper = ({
       break;
 
     case MIND_UPDATE_TYPES.DeleteVault:
-      state.vaultStack[vaultIdx].childVaults = state.vaultStack[
-        vaultIdx
-      ].childVaults.filter(vault => vault.vaultId !== deletedVaultId);
+      state.vaultStack[vaultIdx].childVaults = state.vaultStack[vaultIdx].childVaults.filter(
+        (vault) => vault.vaultId !== deletedVaultId
+      );
       break;
 
     case MIND_UPDATE_TYPES.EditVaults:
-      vaultEditRequests!.forEach(editRequest => {
-        const idx = state.vaultStack[vaultIdx].childVaults.findIndex(
-          vault => vault.vaultId === editRequest.vaultId
-        );
-        state.vaultStack[vaultIdx].childVaults[idx].imageUrl =
-          editRequest.newImage as string;
+      vaultEditRequests!.forEach((editRequest) => {
+        const idx = state.vaultStack[vaultIdx].childVaults.findIndex((vault) => vault.vaultId === editRequest.vaultId);
+        state.vaultStack[vaultIdx].childVaults[idx].imageUrl = editRequest.newImage as string;
         state.vaultStack[vaultIdx].childVaults[idx].name = editRequest.newName;
       });
       break;
 
     case MIND_UPDATE_TYPES.ReorderVaults:
-      state.vaultStack[vaultIdx].childVaults = arrayMove(
-        state.vaultStack[vaultIdx].childVaults,
-        oldIndex!,
-        newIndex!
-      );
+      state.vaultStack[vaultIdx].childVaults = arrayMove(state.vaultStack[vaultIdx].childVaults, oldIndex!, newIndex!);
       break;
   }
 
   for (let i = vaultIdx - 1; i >= 0; i--) {
     const vaultId = state.vaultStack[i + 1].vaultId;
-    const childVaultIdx = state.vaultStack[i].childVaults.findIndex(
-      vault => vault.vaultId === vaultId
-    );
+    const childVaultIdx = state.vaultStack[i].childVaults.findIndex((vault) => vault.vaultId === vaultId);
     state.vaultStack[i].childVaults[childVaultIdx] = state.vaultStack[i + 1];
   }
 };

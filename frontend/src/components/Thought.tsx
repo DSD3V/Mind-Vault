@@ -1,8 +1,8 @@
+import { Dispatch, SetStateAction } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { SetStateAction } from 'react';
 
+import { RTE_CONTENT_STYLE, RTE_HEIGHT } from '../constants';
 import '../styles/richTextEditorSkin.css';
-import { RTE_HEIGHT } from '../constants';
 import { ThoughtDiv } from '../styles/VaultStyles';
 
 export const Thought = ({
@@ -12,13 +12,13 @@ export const Thought = ({
 }: {
   html: string;
   isFirstEditorInitialized: boolean;
-  setIsFirstEditorInitialized: React.Dispatch<SetStateAction<boolean>>;
+  setIsFirstEditorInitialized: Dispatch<SetStateAction<boolean>>;
 }) => (
   <ThoughtDiv $isInitialized={isFirstEditorInitialized}>
     <Editor
       disabled={true}
       init={{
-        content_css: `${process.env.PUBLIC_URL}/richTextEditor.css`,
+        content_style: RTE_CONTENT_STYLE,
         contextmenu: false,
         height: RTE_HEIGHT,
         menubar: false,

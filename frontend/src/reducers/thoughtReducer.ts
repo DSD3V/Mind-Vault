@@ -14,6 +14,7 @@ import {
   EDIT_THOUGHTS_STARTED,
   EDIT_THOUGHTS_SUCCEEDED,
 } from '../actions/thoughtActions';
+import { ThoughtStateI } from '../interfaces';
 
 const initialState = {
   addingThoughtErrorMessage: '',
@@ -25,19 +26,9 @@ const initialState = {
   isAddingThought: false,
   isDeletingThought: false,
   isEditingThoughts: false,
-} as {
-  addingThoughtErrorMessage: string;
-  addingThoughtSuccessMessage: string;
-  deletingThoughtErrorMessage: string;
-  deletingThoughtSuccessMessage: string;
-  editingThoughtsErrorMessage: string;
-  editingThoughtsSuccessMessage: string;
-  isAddingThought: boolean;
-  isDeletingThought: boolean;
-  isEditingThoughts: boolean;
-};
+} as ThoughtStateI;
 
-export const thoughtReducer = createReducer(initialState, builder => {
+export const thoughtReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(ADD_THOUGHT_FAILED, (state, action) => {
       const { errorMessage } = action.payload;
@@ -45,7 +36,7 @@ export const thoughtReducer = createReducer(initialState, builder => {
       state.isAddingThought = false;
     })
 
-    .addCase(ADD_THOUGHT_STARTED, state => {
+    .addCase(ADD_THOUGHT_STARTED, (state) => {
       state.addingThoughtErrorMessage = '';
       state.addingThoughtSuccessMessage = '';
       state.isAddingThought = true;
@@ -58,17 +49,17 @@ export const thoughtReducer = createReducer(initialState, builder => {
       state.isAddingThought = false;
     })
 
-    .addCase(CLEAR_ADD_THOUGHT_MESSAGES, state => {
+    .addCase(CLEAR_ADD_THOUGHT_MESSAGES, (state) => {
       state.addingThoughtErrorMessage = '';
       state.addingThoughtSuccessMessage = '';
     })
 
-    .addCase(CLEAR_DELETE_THOUGHT_MESSAGES, state => {
+    .addCase(CLEAR_DELETE_THOUGHT_MESSAGES, (state) => {
       state.deletingThoughtErrorMessage = '';
       state.deletingThoughtSuccessMessage = '';
     })
 
-    .addCase(CLEAR_EDIT_THOUGHTS_MESSAGES, state => {
+    .addCase(CLEAR_EDIT_THOUGHTS_MESSAGES, (state) => {
       state.editingThoughtsErrorMessage = '';
       state.editingThoughtsSuccessMessage = '';
     })
@@ -79,7 +70,7 @@ export const thoughtReducer = createReducer(initialState, builder => {
       state.isDeletingThought = false;
     })
 
-    .addCase(DELETE_THOUGHT_STARTED, state => {
+    .addCase(DELETE_THOUGHT_STARTED, (state) => {
       state.deletingThoughtErrorMessage = '';
       state.deletingThoughtSuccessMessage = '';
       state.isDeletingThought = true;
@@ -98,7 +89,7 @@ export const thoughtReducer = createReducer(initialState, builder => {
       state.isEditingThoughts = false;
     })
 
-    .addCase(EDIT_THOUGHTS_STARTED, state => {
+    .addCase(EDIT_THOUGHTS_STARTED, (state) => {
       state.editingThoughtsErrorMessage = '';
       state.isEditingThoughts = true;
     })

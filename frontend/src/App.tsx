@@ -28,8 +28,8 @@ export const App = () => {
         <Routes>
           {isAuthenticated ? (
             <>
-              <Route element={<Home />} path='/' />
-              <Route element={<PageNotFound />} path='*' />
+              <Route element={<Home />} path="/" />
+              <Route element={<PageNotFound />} path="*" />
             </>
           ) : (
             <Route
@@ -40,7 +40,7 @@ export const App = () => {
                   openLoginSignupModal={openLoginSignupModal}
                 />
               }
-              path='*'
+              path="*"
             />
           )}
         </Routes>

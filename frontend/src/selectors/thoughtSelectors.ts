@@ -6,45 +6,36 @@ const selectThoughtState = (state: RootState) => state.thought;
 
 export const selectAddingThoughtErrorMessage = createSelector(
   [selectThoughtState],
-  state => state.addingThoughtErrorMessage
+  (state) => state.addingThoughtErrorMessage
 );
 
 export const selectAddingThoughtSuccessMessage = createSelector(
   [selectThoughtState],
-  state => state.addingThoughtSuccessMessage
+  (state) => state.addingThoughtSuccessMessage
 );
 
 export const selectDeletingThoughtErrorMessage = createSelector(
   [selectThoughtState],
-  state => state.deletingThoughtErrorMessage
+  (state) => state.deletingThoughtErrorMessage
 );
 
 export const selectDeletingThoughtSuccessMessage = createSelector(
   [selectThoughtState],
-  state => state.deletingThoughtSuccessMessage
+  (state) => state.deletingThoughtSuccessMessage
 );
 
-export const selectIsAddingThought = createSelector(
-  [selectThoughtState],
-  state => state.isAddingThought
-);
+export const selectIsAddingThought = createSelector([selectThoughtState], (state) => state.isAddingThought);
 
-export const selectIsDeletingThought = createSelector(
-  [selectThoughtState],
-  state => state.isDeletingThought
-);
+export const selectIsDeletingThought = createSelector([selectThoughtState], (state) => state.isDeletingThought);
 
 export const selectEditingThoughtsErrorMessage = createSelector(
   [selectThoughtState],
-  state => state.editingThoughtsErrorMessage
+  (state) => state.editingThoughtsErrorMessage
 );
 
 export const selectEditingThoughtsSuccessMessage = createSelector(
   [selectThoughtState],
-  state => state.editingThoughtsSuccessMessage
+  (state) => state.editingThoughtsSuccessMessage
 );
 
-export const selectIsEditingThoughts = createSelector(
-  [selectThoughtState],
-  state => state.isEditingThoughts
-);
+export const selectIsEditingThoughts = createSelector([selectThoughtState], (state) => state.isEditingThoughts);

@@ -14,9 +14,11 @@ export const colors = {
   SLIGHTLY_LESS_DARK_RED: '#B70000',
 };
 
-export const IMAGE_FILE_ERROR_MESSAGE =
-  'Uploaded file must be an image (.jpg, .jpeg, .png, etc.)';
+export const IMAGE_FILE_ERROR_MESSAGE = 'Uploaded file must be an image (.jpg, .jpeg, .png, etc.)';
 
+export const MAX_PARENT_VAULT_NAME_CHARS = 16;
+
+export const NAV_BUTTON_WIDTH = '210px';
 export const NAV_HEIGHT = 65;
 
 export const PASSWORD_MIN_LENGTH = 6;
@@ -25,6 +27,9 @@ export const PASSWORDS_MUST_MATCH_ERROR_MESSAGE = 'Passwords must match.';
 
 export const REQUIRED_ERROR_MESSAGE = 'This field is required.';
 
+export const RTE_CONTENT_STYLE =
+  '.mce-content-body { color: #e0e0e0; font-family: Helvetica, Arial, sans-serif; font-size: 14px; } ' +
+  '.mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before { color: #e0e0e0; opacity: 0.4; } ';
 export const RTE_HEIGHT = 200;
 
 export const THOUGHT_CONTENT_REQUIRED = 'Thought content is required.';
@@ -32,7 +37,5 @@ export const THOUGHT_CONTENT_REQUIRED = 'Thought content is required.';
 export const VALID_EMAIL_FORM_ERROR_MESSAGE = 'Email must be of the form _@_._';
 export const VALID_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export const VAULT_NAME_EXISTS_ERROR_MESSAGE =
-  'You already have a vault with this name.';
-export const VAULT_NAME_NULL_ERROR_MESSAGE =
-  'Vault name must contain at least one symbol.';
+export const VAULT_NAME_EXISTS_ERROR_MESSAGE = 'You already have a vault with this name.';
+export const VAULT_NAME_NULL_ERROR_MESSAGE = 'Vault name must contain at least one symbol.';

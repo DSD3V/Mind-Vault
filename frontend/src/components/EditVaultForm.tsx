@@ -2,33 +2,24 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { faGripVertical } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { SetStateAction, useEffect, useLayoutEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useLayoutEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { deleteVault } from '../actions/vaultActions';
-import { DeleteModal } from './DeleteModal';
-import defaultVaultImgUrl from '../images/vaultPic.jpg';
-import { VaultEditRequestI, VaultI } from '../interfaces';
-import {
-  selectDeletingVaultErrorMessage,
-  selectIsDeletingVault,
-} from '../selectors/vaultSelectors';
-import { useAppDispatch, useAppSelector } from '../store';
-import { ErrorMessage2 } from '../styles/FormStyles';
-import { Div, EmptySpan, NameInputField, X } from '../styles/GlobalStyles';
-import {
-  EditVaultCell,
-  EditVaultImage,
-  EmptyVaultImage,
-  VaultImageFileInput,
-  VaultImageText,
-} from '../styles/VaultStyles';
 import {
   IMAGE_FILE_ERROR_MESSAGE,
   REQUIRED_ERROR_MESSAGE,
   VAULT_NAME_EXISTS_ERROR_MESSAGE,
   VAULT_NAME_NULL_ERROR_MESSAGE,
 } from '../constants';
+import { DeleteModal } from './DeleteModal';
+import defaultVaultImgUrl from '../images/vaultPic.jpg';
+import { VaultEditRequestI, VaultI } from '../interfaces';
+import { selectDeletingVaultErrorMessage, selectIsDeletingVault } from '../selectors/vaultSelectors';
+import { useAppDispatch, useAppSelector } from '../store';
+import { ErrorMessage2 } from '../styles/FormStyles';
+import { Div, EmptySpan, FileInput, NameInputField, X } from '../styles/GlobalStyles';
+import { EditVaultCell, EditVaultImage, EmptyVaultImage, VaultImageText } from '../styles/VaultStyles';
 
 export const EditVaultForm = ({
   isActive,
@@ -42,13 +33,13 @@ export const EditVaultForm = ({
   id?: null | string;
   isActive?: boolean;
   isOver?: boolean;
-  setEditErrors: React.Dispatch<SetStateAction<Set<string>>>;
-  setVaultEditRequests: React.Dispatch<SetStateAction<VaultEditRequestI[]>>;
-  setVaultNames: React.Dispatch<SetStateAction<{ [key: string]: string }>>;
+  setEditErrors: Dispatch<SetStateAction<Set<string>>>;
+  setVaultEditRequests: Dispatch<SetStateAction<VaultEditRequestI[]>>;
+  setVaultNames: Dispatch<SetStateAction<{ [key: string]: string }>>;
   vault: VaultI;
   vaultNames: { [key: string]: string };
 }) => {
-  const defaultVaultFormValues = {
+  const defaultFormValues = {
     didVaultNameChange: false,
     vaultImage: vault.imageUrl,
     vaultName: vault.name,
@@ -63,27 +54,18 @@ export const EditVaultForm = ({
     setValue,
     watch,
   } = useForm({
-    defaultValues: defaultVaultFormValues,
+    defaultValues: defaultFormValues,
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
   const { attributes, listeners, setNodeRef, transform } = useSortable({
     id: vault.vaultId,
   });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition: 'none',
-  };
-
   const dispatch = useAppDispatch();
-  const deletingVaultErrorMessage = useAppSelector(
-    selectDeletingVaultErrorMessage
-  );
+  const deletingVaultErrorMessage = useAppSelector(selectDeletingVaultErrorMessage);
   const isDeletingVault = useAppSelector(selectIsDeletingVault);
 
-  const [defaultVaultImageFile, setDefaultVaultImageFile] = useState(
-    {} as File
-  );
+  const [defaultVaultImageFile, setDefaultVaultImageFile] = useState({} as File);
   const [vaultImageErrorMessage, setVaultImageErrorMessage] = useState('');
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -95,7 +77,7 @@ export const EditVaultForm = ({
   const handleOpenDeleteModal = () => setIsDeleteModalOpen(true);
 
   useEffect(() => {
-    setEditErrors(prevEditErrors => {
+    setEditErrors((prevEditErrors) => {
       const editErrors = new Set(prevEditErrors);
       if (!numErrors) {
         editErrors.delete(vault.vaultId);
@@ -127,20 +109,14 @@ export const EditVaultForm = ({
     );
   };
 
-  const handleInputChange = ({
-    target: { value },
-  }: {
-    target: { value: string };
-  }) => {
+  const handleInputChange = ({ target: { value } }: { target: { value: string } }) => {
     setVaultNames((prevVaultNames: { [key: string]: string }) => ({
       ...prevVaultNames,
       [vault.vaultId]: value,
     }));
-    setVaultEditRequests(prevVaultEditRequests => {
+    setVaultEditRequests((prevVaultEditRequests) => {
       const editRequests = [...prevVaultEditRequests];
-      const idx = editRequests.findIndex(
-        editRequest => editRequest.vaultId === vault.vaultId
-      );
+      const idx = editRequests.findIndex((editRequest) => editRequest.vaultId === vault.vaultId);
       if (idx !== -1) {
         editRequests[idx].newName = value;
       } else {
@@ -155,11 +131,9 @@ export const EditVaultForm = ({
   };
 
   const uploadImageHelper = ({ newImage }: { newImage: File | null }) => {
-    setVaultEditRequests(prevVaultEditRequests => {
+    setVaultEditRequests((prevVaultEditRequests) => {
       const editRequests = [...prevVaultEditRequests];
-      const idx = editRequests.findIndex(
-        editRequest => editRequest.vaultId === vault.vaultId
-      );
+      const idx = editRequests.findIndex((editRequest) => editRequest.vaultId === vault.vaultId);
       if (idx !== -1) {
         editRequests[idx].newImage = newImage;
       } else {
@@ -173,11 +147,7 @@ export const EditVaultForm = ({
     });
   };
 
-  const handleUploadFile = ({
-    target: { files },
-  }: {
-    target: { files: FileList | null };
-  }) => {
+  const handleUploadFile = ({ target: { files } }: { target: { files: FileList | null } }) => {
     if (!(files![0].type.slice(0, 5) === 'image')) {
       setVaultImageErrorMessage(IMAGE_FILE_ERROR_MESSAGE);
     } else {
@@ -200,10 +170,17 @@ export const EditVaultForm = ({
   };
 
   return (
-    <EditVaultCell $isActive={isActive} ref={setNodeRef} style={style}>
+    <EditVaultCell
+      $isActive={isActive}
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition: 'none',
+      }}
+    >
       <DeleteModal
-        bodyText='Are you sure you want to delete this vault? All associated thoughts
-          and inner vaults will also be deleted.'
+        bodyText="Are you sure you want to delete this vault? All associated thoughts
+          and inner vaults will also be deleted."
         deleteText={isDeletingVault ? 'Deleting Vault...' : 'Delete'}
         errorMessage={deletingVaultErrorMessage}
         onClose={handleCloseDeleteModal}
@@ -211,14 +188,8 @@ export const EditVaultForm = ({
         shouldShow={isDeleteModalOpen}
         title={vault.name}
       />
-      <Div $j='space-between' $m='-5px 0 5px 0' $p='0 6px'>
-        <FontAwesomeIcon
-          {...attributes}
-          {...listeners}
-          className='dragIcon'
-          icon={faGripVertical}
-          size='2x'
-        />
+      <Div $j="space-between" $m="-5px 0 5px 0" $p="0 6px">
+        <FontAwesomeIcon {...attributes} {...listeners} className="dragIcon" icon={faGripVertical} size="2x" />
         <X onClick={handleOpenDeleteModal}>X</X>
       </Div>
       <NameInputField
@@ -229,44 +200,24 @@ export const EditVaultForm = ({
             value: true,
           },
           validate: {
-            doesntExist: value =>
-              !(
-                Object.values(vaultNames).includes(value) &&
-                vaultNames.newVault !== value
-              ) || VAULT_NAME_EXISTS_ERROR_MESSAGE,
-            isntNull: value => !!value.trim() || VAULT_NAME_NULL_ERROR_MESSAGE,
+            doesntExist: (value) =>
+              !(Object.values(vaultNames).includes(value) && vaultNames.newVault !== value) ||
+              VAULT_NAME_EXISTS_ERROR_MESSAGE,
+            isntNull: (value) => !!value.trim() || VAULT_NAME_NULL_ERROR_MESSAGE,
           },
         })}
         placeholder={'New Vault Name (Required)'}
       />
-      <ErrorMessage2>
-        {errors.vaultName ? (
-          errors.vaultName.message
-        ) : (
-          <EmptySpan>&nbsp;</EmptySpan>
-        )}
-      </ErrorMessage2>
+      <ErrorMessage2>{errors.vaultName ? errors.vaultName.message : <EmptySpan>&nbsp;</EmptySpan>}</ErrorMessage2>
       {!!vaultImage ? (
-        <EditVaultImage
-          src={
-            typeof vaultImage === 'string'
-              ? vaultImage
-              : URL.createObjectURL(vaultImage)
-          }
-        />
+        <EditVaultImage src={typeof vaultImage === 'string' ? vaultImage : URL.createObjectURL(vaultImage)} />
       ) : (
         <EmptyVaultImage />
       )}
-      <VaultImageFileInput
-        accept='image/*'
-        onChange={handleUploadFile}
-        type='file'
-      />
+      <FileInput accept="image/*" onChange={handleUploadFile} type="file" />
       <Div>
         <VaultImageText onClick={handleRemoveImage}>Remove</VaultImageText>
-        <VaultImageText onClick={handleDefaultImage}>
-          Use Default
-        </VaultImageText>
+        <VaultImageText onClick={handleDefaultImage}>Use Default</VaultImageText>
       </Div>
       <Div>
         {vaultImageErrorMessage ? (

@@ -2,10 +2,7 @@ import { TailSpin } from 'react-loader-spinner';
 
 import defaultVaultImgUrl from '../images/vaultPic.jpg';
 import { LoginSignupModal } from './LoginSignupModal';
-import {
-  selectMindCurrentVault,
-  selectMindIsLoading,
-} from '../selectors/mindSelectors';
+import { selectMindCurrentVault, selectMindIsLoading } from '../selectors/mindSelectors';
 import { selectUserIsAuthenticated } from '../selectors/userSelectors';
 import { useAppSelector } from '../store';
 import { Container, Div } from '../styles/GlobalStyles';
@@ -28,9 +25,9 @@ export const Home = ({
   return isAuthenticated ? (
     isLoadingVaults ? (
       <Container>
-        <Div $d='column' $f='1.2rem' $m='40px 0 0 0'>
+        <Div $d="column" $f="1.2rem" $m="40px 0 0 0">
           <span style={{ paddingBottom: '38px' }}>Fetching vaults...</span>
-          <TailSpin color='#00BFFF' height={70} width={70} />
+          <TailSpin color="#00BFFF" height={70} width={70} />
         </Div>
       </Container>
     ) : (
@@ -45,9 +42,7 @@ export const Home = ({
         />
       )}
       <LoginSignupCell onClick={() => openLoginSignupModal()}>
-        <VaultTitle>
-          Log In or Sign Up to view or create Mind Vaults.
-        </VaultTitle>
+        <VaultTitle>Log In or Sign Up to view or create Mind Vaults.</VaultTitle>
         <VaultImage src={defaultVaultImgUrl} />
       </LoginSignupCell>
     </Container>

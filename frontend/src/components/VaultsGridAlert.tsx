@@ -12,28 +12,15 @@ import { AlertDiv } from '../styles/GlobalStyles';
 
 export const VaultsGridAlert = () => {
   const dispatch = useAppDispatch();
-  const deletingVaultSuccessMessage = useAppSelector(
-    selectDeletingVaultSuccessMessage
-  );
-  const editingVaultsErrorMessage = useAppSelector(
-    selectEditingVaultsErrorMessage
-  );
-  const editingVaultsSuccessMessage = useAppSelector(
-    selectEditingVaultsSuccessMessage
-  );
+  const deletingVaultSuccessMessage = useAppSelector(selectDeletingVaultSuccessMessage);
+  const editingVaultsErrorMessage = useAppSelector(selectEditingVaultsErrorMessage);
+  const editingVaultsSuccessMessage = useAppSelector(selectEditingVaultsSuccessMessage);
   const isSavingChanges = useAppSelector(selectIsEditingVaults);
 
-  const [showDeletedVaultSuccessAlert, setShowDeletedVaultSuccessAlert] =
-    useState(!!deletingVaultSuccessMessage);
-  const [showEditingErrorAlert, setShowEditingErrorAlert] = useState(
-    !!editingVaultsErrorMessage
-  );
-  const [showSavingChangesAlert, setShowSavingChangesAlert] = useState(
-    !!isSavingChanges
-  );
-  const [showEditingSuccessAlert, setShowEditingSuccessAlert] = useState(
-    !!editingVaultsSuccessMessage
-  );
+  const [showDeletedVaultSuccessAlert, setShowDeletedVaultSuccessAlert] = useState(!!deletingVaultSuccessMessage);
+  const [showEditingErrorAlert, setShowEditingErrorAlert] = useState(!!editingVaultsErrorMessage);
+  const [showSavingChangesAlert, setShowSavingChangesAlert] = useState(!!isSavingChanges);
+  const [showEditingSuccessAlert, setShowEditingSuccessAlert] = useState(!!editingVaultsSuccessMessage);
 
   useEffect(() => {
     if (!!editingVaultsErrorMessage) {
@@ -67,25 +54,18 @@ export const VaultsGridAlert = () => {
         dismissible
         onClose={() => setShowDeletedVaultSuccessAlert(false)}
         show={showEditingSuccessAlert || showSavingChangesAlert}
-        variant='info'
+        variant="info"
       >
-        {showEditingSuccessAlert
-          ? editingVaultsSuccessMessage
-          : showSavingChangesAlert && 'Saving vault changes...'}
+        {showEditingSuccessAlert ? editingVaultsSuccessMessage : showSavingChangesAlert && 'Saving vault changes...'}
       </Alert>
-      <Alert
-        dismissible
-        onClose={() => setShowEditingErrorAlert(false)}
-        show={showEditingErrorAlert}
-        variant='danger'
-      >
+      <Alert dismissible onClose={() => setShowEditingErrorAlert(false)} show={showEditingErrorAlert} variant="danger">
         {editingVaultsErrorMessage}
       </Alert>
       <Alert
         dismissible
         onClose={() => setShowDeletedVaultSuccessAlert(false)}
         show={showDeletedVaultSuccessAlert}
-        variant='info'
+        variant="info"
       >
         {deletingVaultSuccessMessage}
       </Alert>

@@ -16,6 +16,7 @@ import {
   EDIT_VAULTS_SUCCEEDED,
   REORDER_VAULTS_FAILED,
 } from '../actions/vaultActions';
+import { VaultStateI } from '../interfaces';
 
 const initialState = {
   addingVaultErrorMessage: '',
@@ -28,20 +29,9 @@ const initialState = {
   isDeletingVault: false,
   isEditingVaults: false,
   reorderingVaultsErrorMessage: '',
-} as {
-  addingVaultErrorMessage: string;
-  addingVaultSuccessMessage: string;
-  deletingVaultErrorMessage: string;
-  deletingVaultSuccessMessage: string;
-  editingVaultsErrorMessage: string;
-  editingVaultsSuccessMessage: string;
-  isAddingVault: boolean;
-  isDeletingVault: boolean;
-  isEditingVaults: boolean;
-  reorderingVaultsErrorMessage: string;
-};
+} as VaultStateI;
 
-export const vaultReducer = createReducer(initialState, builder => {
+export const vaultReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(ADD_VAULT_FAILED, (state, action) => {
       const { errorMessage } = action.payload;
@@ -49,7 +39,7 @@ export const vaultReducer = createReducer(initialState, builder => {
       state.isAddingVault = false;
     })
 
-    .addCase(ADD_VAULT_STARTED, state => {
+    .addCase(ADD_VAULT_STARTED, (state) => {
       state.addingVaultErrorMessage = '';
       state.isAddingVault = true;
     })
@@ -61,22 +51,22 @@ export const vaultReducer = createReducer(initialState, builder => {
       state.isAddingVault = false;
     })
 
-    .addCase(CLEAR_ADD_VAULT_MESSAGES, state => {
+    .addCase(CLEAR_ADD_VAULT_MESSAGES, (state) => {
       state.addingVaultErrorMessage = '';
       state.addingVaultSuccessMessage = '';
     })
 
-    .addCase(CLEAR_DELETE_VAULT_MESSAGES, state => {
+    .addCase(CLEAR_DELETE_VAULT_MESSAGES, (state) => {
       state.deletingVaultErrorMessage = '';
       state.deletingVaultSuccessMessage = '';
     })
 
-    .addCase(CLEAR_EDIT_VAULTS_MESSAGES, state => {
+    .addCase(CLEAR_EDIT_VAULTS_MESSAGES, (state) => {
       state.editingVaultsErrorMessage = '';
       state.editingVaultsSuccessMessage = '';
     })
 
-    .addCase(CLEAR_REORDER_VAULTS_MESSAGES, state => {
+    .addCase(CLEAR_REORDER_VAULTS_MESSAGES, (state) => {
       state.editingVaultsErrorMessage = '';
     })
 
@@ -86,7 +76,7 @@ export const vaultReducer = createReducer(initialState, builder => {
       state.isDeletingVault = false;
     })
 
-    .addCase(DELETE_VAULT_STARTED, state => {
+    .addCase(DELETE_VAULT_STARTED, (state) => {
       state.deletingVaultErrorMessage = '';
       state.deletingVaultSuccessMessage = '';
       state.isDeletingVault = true;
@@ -105,7 +95,7 @@ export const vaultReducer = createReducer(initialState, builder => {
       state.isEditingVaults = false;
     })
 
-    .addCase(EDIT_VAULTS_STARTED, state => {
+    .addCase(EDIT_VAULTS_STARTED, (state) => {
       state.editingVaultsErrorMessage = '';
       state.editingVaultsSuccessMessage = '';
       state.isEditingVaults = true;

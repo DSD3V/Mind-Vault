@@ -1,19 +1,19 @@
 /// <reference path='./index.d.ts'/>
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
+import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import './styles/index.css';
 import { App } from './App';
 import { store } from './store';
+import './styles/index.css';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <StrictMode>
     <Provider store={store}>
       <App />
     </Provider>
-  </React.StrictMode>,
+  </StrictMode>,
   document.getElementById('root')
 );

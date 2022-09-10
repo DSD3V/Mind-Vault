@@ -17,26 +17,15 @@ export const LoginSignupModal = ({
   const [selectedForm, setSelectedForm] = useState('login');
 
   return (
-    <Modal
-      backdrop='static'
-      centered
-      onHide={closeLoginSignupModal}
-      show={isLoginSignupModalOpen}
-    >
+    <Modal backdrop="static" centered onHide={closeLoginSignupModal} show={isLoginSignupModalOpen}>
       <Modal.Header closeButton></Modal.Header>
       <Modal.Body>
         <ModalNav>
-          <ModalNavText
-            $isSelected={selectedForm === 'login'}
-            onClick={() => setSelectedForm('login')}
-          >
+          <ModalNavText $isSelected={selectedForm === 'login'} onClick={() => setSelectedForm('login')}>
             Login
           </ModalNavText>
           <Divider>|</Divider>
-          <ModalNavText
-            $isSelected={selectedForm === 'signup'}
-            onClick={() => setSelectedForm('signup')}
-          >
+          <ModalNavText $isSelected={selectedForm === 'signup'} onClick={() => setSelectedForm('signup')}>
             Signup
           </ModalNavText>
         </ModalNav>

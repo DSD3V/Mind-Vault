@@ -14,7 +14,7 @@ export const Button = styled.a<{
   $w?: string;
 }>`
   align-self: flex-end;
-  border: 2px solid ${colors.NAVY};
+  border: 3px solid ${colors.NAVY};
   color: ${({ $isDisabled }) => ($isDisabled ? colors.DARK_GREY : colors.GREY)};
   cursor: ${({ $isDisabled }) => ($isDisabled ? 'not-allowed' : 'pointer')};
   font-size: 0.9rem;
@@ -26,12 +26,8 @@ export const Button = styled.a<{
   width: ${({ $w }) => ($w ? $w : 'auto')};
 
   :hover {
-    border: ${({ $isDisabled }) =>
-      $isDisabled
-        ? `2px solid ${colors.NAVY}`
-        : `2px solid ${colors.LIGHT_NAVY}`};
-    color: ${({ $isDisabled }) =>
-      $isDisabled ? colors.DARK_GREY : colors.LIGHT_GREY};
+    border: ${({ $isDisabled }) => ($isDisabled ? `3x solid ${colors.NAVY}` : `3px solid ${colors.LIGHT_NAVY}`)};
+    color: ${({ $isDisabled }) => ($isDisabled ? colors.DARK_GREY : colors.LIGHT_GREY)};
   }
 `;
 
@@ -85,29 +81,13 @@ export const EmptySpan = styled.span`
 `;
 
 export const FileInput = styled.input`
-  color: transparent;
-  font-size: 0.75rem;
-  margin: 7px auto 4px auto;
-
-  ::before {
-    border: 2px solid ${colors.NAVY};
-    color: ${colors.GREY};
-    cursor: pointer;
-    display: inline-block;
-    outline: none;
-    padding: 4px 10px;
-    -webkit-user-select: none;
-  }
-
-  :hover::before {
-    border: 2px solid ${colors.LIGHT_NAVY};
-    color: ${colors.LIGHT_GREY};
-    transition: 0.4s;
-  }
-
-  ::-webkit-file-upload-button {
-    visibility: hidden;
-  }
+  background-color: black;
+  color: ${colors.GREY};
+  font-size: 0.8rem;
+  margin: 5px auto;
+  padding: 7px 9px;
+  text-align: center;
+  width: 90px;
 `;
 
 export const NameInputField = styled.input`

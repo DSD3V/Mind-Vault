@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { colors, NAV_HEIGHT } from '../constants';
-import { Divider, FileInput, StyledLink } from './GlobalStyles';
+import { Divider, StyledLink } from './GlobalStyles';
 import { Nav } from './NavbarStyles';
 
 export const EmptyVaultImage = styled.div`
@@ -29,12 +29,10 @@ export const VaultCell = styled.div`
     height: 240px;
     width: 240px;
   }
-
   @media (min-width: 480px) and (max-width: 1000px) {
     height: 300px;
     width: 300px;
   }
-
   @media (min-width: 1000px) {
     height: 350px;
     width: 350px;
@@ -90,11 +88,9 @@ export const NewVaultCell = styled(VaultCell)`
   @media (max-width: 480px) {
     width: 290px;
   }
-
   @media (min-width: 480px) and (max-width: 1000px) {
     width: 350px;
   }
-
   @media (min-width: 1000px) {
     width: 412px;
   }
@@ -104,8 +100,7 @@ export const ThoughtDiv = styled.div<{
   $isInitialized: boolean;
 }>`
   align-items: center;
-  border: ${({ $isInitialized }) =>
-    `${$isInitialized ? '4px solid #0e052a' : 'none'}`};
+  border: ${({ $isInitialized }) => `${$isInitialized ? '4px solid #0e052a' : 'none'}`};
   display: flex;
   flex-direction: column;
   margin-bottom: 50px;
@@ -124,15 +119,6 @@ export const VaultImage = styled.img`
   height: 65%;
   margin-top: 20px;
   width: 65%;
-`;
-
-export const VaultImageFileInput = styled(FileInput)`
-  text-align: center;
-  width: 132px;
-
-  ::before {
-    content: 'Choose Vault Image';
-  }
 `;
 
 export const VaultImageText = styled.a`
@@ -168,8 +154,7 @@ export const VaultNavDivider = styled(Divider)`
 export const VaultNavLink = styled(StyledLink)<{
   $isSelected: boolean;
 }>`
-  border-bottom: ${({ $isSelected }) =>
-    `1px solid ${$isSelected ? colors.LIGHTER_NAVY : 'black'}`};
+  border-bottom: ${({ $isSelected }) => `1px solid ${$isSelected ? colors.LIGHTER_NAVY : 'black'}`};
   color: ${colors.DARK_GREY};
   font-size: 1.1rem;
   padding: 1px 3px;
@@ -206,11 +191,9 @@ export const VaultsGridContainer = styled.div`
   @media (max-width: 480px) {
     grid-template-columns: repeat(auto-fit, 240px);
   }
-
   @media (min-width: 480px) and (max-width: 1000px) {
     grid-template-columns: repeat(auto-fit, 300px);
   }
-
   @media (min-width: 1000px) {
     grid-template-columns: repeat(auto-fit, 350px);
   }
@@ -227,11 +210,9 @@ export const VaultTitle = styled.span`
     max-width: 190px;
     padding: 0px;
   }
-
   @media (min-width: 480px) and (max-width: 1000px) {
     max-width: 250px;
   }
-
   @media (min-width: 1000px) {
     max-width: 300px;
   }

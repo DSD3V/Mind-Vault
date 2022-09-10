@@ -2,8 +2,7 @@ import mongoose from 'mongoose';
 
 import { ThoughtSchema } from './Thought.js';
 
-const Schema = mongoose.Schema;
-const model = mongoose.model;
+const { model, Schema } = mongoose;
 
 const VaultSchema = new Schema();
 

@@ -2,23 +2,20 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { faGripVertical } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { SetStateAction, useState } from 'react';
 
-import '../styles/richTextEditorSkin.css';
 import { deleteThought } from '../actions/thoughtActions';
 import { bucket, imageUrlRoot } from '../aws';
-import { RTE_HEIGHT, THOUGHT_CONTENT_REQUIRED } from '../constants';
+import { RTE_CONTENT_STYLE, RTE_HEIGHT, THOUGHT_CONTENT_REQUIRED } from '../constants';
 import { DeleteModal } from './DeleteModal';
 import { ThoughtI } from '../interfaces';
-import {
-  selectDeletingThoughtErrorMessage,
-  selectIsDeletingThought,
-} from '../selectors/thoughtSelectors';
+import { selectDeletingThoughtErrorMessage, selectIsDeletingThought } from '../selectors/thoughtSelectors';
+import { useAppDispatch, useAppSelector } from '../store';
 import { ErrorMessage2 } from '../styles/FormStyles';
 import { Div, EmptySpan, X } from '../styles/GlobalStyles';
+import '../styles/richTextEditorSkin.css';
 import { InnerThoughtDiv } from '../styles/VaultStyles';
-import { useAppDispatch, useAppSelector } from '../store';
 
 export const RichTextEditor = ({
   editorKey,
@@ -45,29 +42,20 @@ export const RichTextEditor = ({
   isForNewThought?: boolean;
   isOver?: boolean;
   onNewThoughtChange?: ({ newHTML }: { newHTML: string }) => void;
-  setHasEditedThoughts?: React.Dispatch<SetStateAction<boolean>>;
-  setIsFirstEditorInitialized: React.Dispatch<SetStateAction<boolean>>;
-  setIsNewThoughtEditorInitialized?: React.Dispatch<SetStateAction<boolean>>;
-  setThoughtEditErrors?: React.Dispatch<SetStateAction<Set<string>>>;
-  setThoughtIdToNewHTML?: React.Dispatch<
-    SetStateAction<{ [key: string]: string }>
-  >;
-  setThoughts: React.Dispatch<SetStateAction<ThoughtI[]>>;
+  setHasEditedThoughts?: Dispatch<SetStateAction<boolean>>;
+  setIsFirstEditorInitialized: Dispatch<SetStateAction<boolean>>;
+  setIsNewThoughtEditorInitialized?: Dispatch<SetStateAction<boolean>>;
+  setThoughtEditErrors?: Dispatch<SetStateAction<Set<string>>>;
+  setThoughtIdToNewHTML?: Dispatch<SetStateAction<{ [key: string]: string }>>;
+  setThoughts: Dispatch<SetStateAction<ThoughtI[]>>;
   thoughtId: string;
   thoughtIdToNewHTML?: { [key: string]: string };
 }) => {
   const { attributes, listeners, setNodeRef, transform } = useSortable({
     id: thoughtId,
   });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition: 'none',
-  };
-
   const dispatch = useAppDispatch();
-  const deletingThoughtErrorMessage = useAppSelector(
-    selectDeletingThoughtErrorMessage
-  );
+  const deletingThoughtErrorMessage = useAppSelector(selectDeletingThoughtErrorMessage);
   const isDeletingThought = useAppSelector(selectIsDeletingThought);
 
   const [editorContent, setEditorContent] = useState(initialValue);
@@ -86,7 +74,7 @@ export const RichTextEditor = ({
     if (isForNewThought) {
       onNewThoughtChange!({ newHTML });
     } else {
-      setThoughtEditErrors!(prevEditErrors => {
+      setThoughtEditErrors!((prevEditErrors) => {
         const editErrors = new Set(prevEditErrors);
         if (!newHTML) {
           editErrors.add(thoughtId);
@@ -95,12 +83,10 @@ export const RichTextEditor = ({
         }
         return editErrors;
       });
-      setThoughtIdToNewHTML!(
-        (prevThoughtIdToNewHTML: { [key: string]: string }) => ({
-          ...prevThoughtIdToNewHTML,
-          [thoughtId]: newHTML,
-        })
-      );
+      setThoughtIdToNewHTML!((prevThoughtIdToNewHTML: { [key: string]: string }) => ({
+        ...prevThoughtIdToNewHTML,
+        [thoughtId]: newHTML,
+      }));
       if (!hasEditedThoughts) {
         setHasEditedThoughts!(true);
       }
@@ -128,16 +114,13 @@ export const RichTextEditor = ({
         Bucket: process.env.REACT_APP_S3_BUCKET || '',
         Key: imageFile.name,
       })
-      .on(
-        'httpUploadProgress',
-        async ({ loaded, total }: { loaded: number; total: number }) => {
-          if (Math.round((loaded / total) * 100) === 100) {
-            const imageUrl = imageUrlRoot + imageFile.name;
-            success(imageUrl);
-          }
+      .on('httpUploadProgress', async ({ loaded, total }: { loaded: number; total: number }) => {
+        if (Math.round((loaded / total) * 100) === 100) {
+          const imageUrl = imageUrlRoot + imageFile.name;
+          success(imageUrl);
         }
-      )
-      .send(error => {
+      })
+      .send((error) => {
         if (error) {
           console.error(error);
         }
@@ -153,9 +136,16 @@ export const RichTextEditor = ({
   };
 
   return (
-    <InnerThoughtDiv $isActive={isActive} ref={setNodeRef} style={style}>
+    <InnerThoughtDiv
+      $isActive={isActive}
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition: 'none',
+      }}
+    >
       <DeleteModal
-        bodyText='Are you sure you want to delete this thought? This action cannot be undone.'
+        bodyText="Are you sure you want to delete this thought? This action cannot be undone."
         deleteText={isDeletingThought ? 'Deleting Thought...' : 'Delete'}
         errorMessage={deletingThoughtErrorMessage}
         onClose={handleCloseDeleteModal}
@@ -163,16 +153,10 @@ export const RichTextEditor = ({
         shouldShow={isDeleteModalOpen}
         title={editorContent.replace(/<[^>]+>/g, '')}
       />
-      <Div $m='5px 0'>
+      <Div $m="5px 0">
         {!isForNewThought && isEditorInitialized && (
-          <Div $j='space-between' $m='-5px 0 0 0' $p='0 8px'>
-            <FontAwesomeIcon
-              {...attributes}
-              {...listeners}
-              className='dragIcon'
-              icon={faGripVertical}
-              size='2x'
-            />
+          <Div $j="space-between" $m="-5px 0 0 0" $p="0 8px">
+            <FontAwesomeIcon {...attributes} {...listeners} className="dragIcon" icon={faGripVertical} size="2x" />
             <X onClick={handleOpenDeleteModal}>X</X>
           </Div>
         )}
@@ -182,10 +166,7 @@ export const RichTextEditor = ({
           automatic_uploads: true,
           block_unsupported_drop: false,
           branding: false,
-          content_css: `${process.env.PUBLIC_URL}/richTextEditor.css`,
-          content_style:
-            "@import url('https://fonts.googleapis.com/css2?family=Lato:wght@900&family=Roboto&display=swap');" +
-            'body { font-family: Helvetica, Arial, sans-serif; font-size: 14px };',
+          content_style: RTE_CONTENT_STYLE,
           contextmenu: false,
           images_upload_handler: handleImageUpload,
           elementpath: false,
@@ -221,11 +202,7 @@ export const RichTextEditor = ({
       />
       <Div>
         <ErrorMessage2>
-          {hasMadeChange && !editorContent ? (
-            THOUGHT_CONTENT_REQUIRED
-          ) : (
-            <EmptySpan>&nbsp;</EmptySpan>
-          )}
+          {hasMadeChange && !editorContent ? THOUGHT_CONTENT_REQUIRED : <EmptySpan>&nbsp;</EmptySpan>}
         </ErrorMessage2>
       </Div>
     </InnerThoughtDiv>

@@ -3,33 +3,19 @@ import { Button, Card, Form } from 'react-bootstrap';
 import { useForm } from 'react-hook-form';
 
 import { CLEAR_FORM, resetPassword } from '../actions/userActions';
-import {
-  selectUserErrorMessage,
-  selectUserIsLoading,
-  selectUserSuccessMessage,
-} from '../selectors/userSelectors';
+import { REQUIRED_ERROR_MESSAGE, VALID_EMAIL_FORM_ERROR_MESSAGE, VALID_EMAIL_REGEX } from '../constants';
+import { selectUserErrorMessage, selectUserIsLoading, selectUserSuccessMessage } from '../selectors/userSelectors';
 import { useAppDispatch, useAppSelector } from '../store';
-import {
-  ResetPasswordErrorMessage,
-  SubmitButtonDiv,
-  SuccessMessage,
-} from '../styles/FormStyles';
+import { ResetPasswordErrorMessage, SubmitButtonDiv, SuccessMessage } from '../styles/FormStyles';
 import { StyledLink } from '../styles/GlobalStyles';
-import {
-  REQUIRED_ERROR_MESSAGE,
-  VALID_EMAIL_FORM_ERROR_MESSAGE,
-  VALID_EMAIL_REGEX,
-} from '../constants';
 
 const defaultFormValues = {
   email: '',
+} as {
+  email: string;
 };
 
-export const ResetPasswordForm = ({
-  setSelectedForm,
-}: {
-  setSelectedForm: (form: string) => void;
-}) => {
+export const ResetPasswordForm = ({ setSelectedForm }: { setSelectedForm: (form: string) => void }) => {
   const {
     formState: { dirtyFields, errors },
     handleSubmit,
@@ -47,16 +33,14 @@ export const ResetPasswordForm = ({
     dispatch(CLEAR_FORM());
   }, [dispatch]);
 
-  const handleResetClicked = handleSubmit(async ({ email }) =>
-    dispatch(resetPassword({ email }))
-  );
+  const handleResetClicked = handleSubmit(async ({ email }) => dispatch(resetPassword({ email })));
 
   return (
     <Card>
       <Card.Body>
-        <h2 className='mb-4 text-center'>Password Reset</h2>
+        <h2 className="mb-4 text-center">Password Reset</h2>
         <Form noValidate onSubmit={handleResetClicked}>
-          <Form.Group className='mb-3'>
+          <Form.Group className="mb-3">
             <Form.Label>
               <b>Email *</b>
             </Form.Label>
@@ -71,48 +55,36 @@ export const ResetPasswordForm = ({
                   value: true,
                 },
               })}
-              placeholder='Enter email'
-              type='email'
+              placeholder="Enter email"
+              type="email"
             />
-            <ResetPasswordErrorMessage>
-              {errors.email && errors.email.message}
-            </ResetPasswordErrorMessage>
+            <ResetPasswordErrorMessage>{errors.email && errors.email.message}</ResetPasswordErrorMessage>
           </Form.Group>
           <SubmitButtonDiv>
             <Button
-              className='mb-2'
+              className="mb-2"
               disabled={
                 isResetPasswordLoading ||
                 !!Object.keys(errors).length ||
-                Object.keys(dirtyFields).length <
-                  Object.keys(defaultFormValues).length
+                Object.keys(dirtyFields).length < Object.keys(defaultFormValues).length
               }
-              type='submit'
+              type="submit"
             >
               Reset Password
             </Button>
             {isResetPasswordLoading && <p>Sending reset password email...</p>}
-            {!!resetPasswordSuccessMessage && (
-              <SuccessMessage>{resetPasswordSuccessMessage}</SuccessMessage>
-            )}
+            {!!resetPasswordSuccessMessage && <SuccessMessage>{resetPasswordSuccessMessage}</SuccessMessage>}
             {!!resetPasswordErrorMessage && (
-              <ResetPasswordErrorMessage>
-                {resetPasswordErrorMessage}
-              </ResetPasswordErrorMessage>
+              <ResetPasswordErrorMessage>{resetPasswordErrorMessage}</ResetPasswordErrorMessage>
             )}
           </SubmitButtonDiv>
-          <div className='text-center mt-3'>
-            <StyledLink onClick={() => setSelectedForm('login')}>
-              Return to Log In
-            </StyledLink>
+          <div className="text-center mt-3">
+            <StyledLink onClick={() => setSelectedForm('login')}>Return to Log In</StyledLink>
           </div>
         </Form>
       </Card.Body>
-      <div className='mb-3 mt-1 text-center'>
-        Need an account?{' '}
-        <StyledLink onClick={() => setSelectedForm('signup')}>
-          Sign Up
-        </StyledLink>
+      <div className="mb-3 mt-1 text-center">
+        Need an account? <StyledLink onClick={() => setSelectedForm('signup')}>Sign Up</StyledLink>
       </div>
     </Card>
   );

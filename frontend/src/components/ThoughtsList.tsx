@@ -8,12 +8,8 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-} from '@dnd-kit/sortable';
-import React, { SetStateAction, useEffect, useState } from 'react';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { TailSpin } from 'react-loader-spinner';
 
 import { ThoughtI } from '../interfaces';
@@ -37,21 +33,16 @@ export const ThoughtsList = ({
 }: {
   hasEditedThoughts: boolean;
   isEditingThoughts: boolean;
-  setHasEditedThoughts: React.Dispatch<SetStateAction<boolean>>;
-  setThoughtEditErrors: React.Dispatch<SetStateAction<Set<string>>>;
-  setThoughtIdToNewHTML: React.Dispatch<
-    SetStateAction<{ [key: string]: string }>
-  >;
-  setThoughts: React.Dispatch<SetStateAction<ThoughtI[]>>;
+  setHasEditedThoughts: Dispatch<SetStateAction<boolean>>;
+  setThoughtEditErrors: Dispatch<SetStateAction<Set<string>>>;
+  setThoughtIdToNewHTML: Dispatch<SetStateAction<{ [key: string]: string }>>;
+  setThoughts: Dispatch<SetStateAction<ThoughtI[]>>;
   thoughtIdToNewHTML: { [key: string]: string };
   thoughts: ThoughtI[];
   vaultId: string;
 }) => {
-  const [isFirstEditorInitialized, setIsFirstEditorInitialized] =
-    useState(false);
-  const [sortableItems, setSortableItems] = useState(
-    thoughts.map(thought => thought.thoughtId)
-  );
+  const [isFirstEditorInitialized, setIsFirstEditorInitialized] = useState(false);
+  const [sortableItems, setSortableItems] = useState(thoughts.map((thought) => thought.thoughtId));
   const [activeId, setActiveId] = useState(null);
   const [editorKeys, setEditorKeys] = useState(thoughts.map((_, idx) => idx));
   const sensors = useSensors(
@@ -64,11 +55,9 @@ export const ThoughtsList = ({
   );
 
   useEffect(() => {
-    setSortableItems(thoughts.map(thought => thought.thoughtId));
+    setSortableItems(thoughts.map((thought) => thought.thoughtId));
     if (thoughts.length > editorKeys.length) {
-      editorKeys.push(
-        !editorKeys.length ? 0 : editorKeys[editorKeys.length - 1] + 1
-      );
+      editorKeys.push(!editorKeys.length ? 0 : editorKeys[editorKeys.length - 1] + 1);
     }
   }, [editorKeys, thoughts]);
 
@@ -81,17 +70,15 @@ export const ThoughtsList = ({
       if (!hasEditedThoughts) {
         setHasEditedThoughts(true);
       }
-      setThoughts(prevThoughts => arrayMove(prevThoughts, oldIndex, newIndex));
+      setThoughts((prevThoughts) => arrayMove(prevThoughts, oldIndex, newIndex));
     }
-    setEditorKeys(prevEditorKeys =>
-      prevEditorKeys.map(editorKey => editorKey + 1)
-    );
+    setEditorKeys((prevEditorKeys) => prevEditorKeys.map((editorKey) => editorKey + 1));
   };
 
   const handleDragStart = (event: any) => {
     const { active } = event;
-    setThoughts!(prevThoughts =>
-      prevThoughts.map(thought => ({
+    setThoughts!((prevThoughts) =>
+      prevThoughts.map((thought) => ({
         ...thought,
         html: thoughtIdToNewHTML[thought.thoughtId],
       }))
@@ -103,13 +90,12 @@ export const ThoughtsList = ({
     <ThoughtsListContainer>
       <ThoughtsListAlert />
       {!!thoughts.length && !isFirstEditorInitialized && (
-        <Div $d='column' $f='1.1rem'>
+        <Div $d="column" $f="1.1rem">
           <span style={{ paddingBottom: '15px' }}>Loading thoughts...</span>
-          <TailSpin color='#00BFFF' height={50} width={50} />
+          <TailSpin color="#00BFFF" height={50} width={50} />
         </Div>
       )}
-      {isEditingThoughts &&
-      ((!!thoughts.length && isFirstEditorInitialized) || !thoughts.length) ? (
+      {isEditingThoughts && ((!!thoughts.length && isFirstEditorInitialized) || !thoughts.length) ? (
         <>
           <NewThoughtForm
             newThoughtIndex={thoughts.length}
@@ -119,17 +105,10 @@ export const ThoughtsList = ({
             thoughtIdToNewHTML={thoughtIdToNewHTML}
             vaultId={vaultId}
           />
-          <DndContext
-            onDragEnd={handleDragEnd}
-            onDragStart={handleDragStart}
-            sensors={sensors}
-          >
+          <DndContext onDragEnd={handleDragEnd} onDragStart={handleDragStart} sensors={sensors}>
             <SortableContext items={sortableItems}>
               {thoughts.map((thought, idx) => (
-                <ThoughtDiv
-                  $isInitialized={isFirstEditorInitialized}
-                  key={thought.thoughtId}
-                >
+                <ThoughtDiv $isInitialized={isFirstEditorInitialized} key={thought.thoughtId}>
                   <RichTextEditor
                     editorKey={editorKeys[idx]}
                     handle={true}
@@ -151,10 +130,7 @@ export const ThoughtsList = ({
                   <RichTextEditor
                     handle={true}
                     id={activeId}
-                    initialValue={
-                      thoughts.find(thought => thought.thoughtId === activeId)!
-                        .html
-                    }
+                    initialValue={thoughts.find((thought) => thought.thoughtId === activeId)!.html}
                     setIsFirstEditorInitialized={setIsFirstEditorInitialized}
                     setThoughtEditErrors={setThoughtEditErrors}
                     setThoughts={setThoughts}
@@ -167,7 +143,7 @@ export const ThoughtsList = ({
         </>
       ) : (
         <>
-          {thoughts.map(thought => (
+          {thoughts.map((thought) => (
             <Thought
               html={thought.html}
               isFirstEditorInitialized={isFirstEditorInitialized}

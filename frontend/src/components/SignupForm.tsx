@@ -1,22 +1,9 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { Button, Card, Form } from 'react-bootstrap';
-import { useForm } from 'react-hook-form';
 import ReCaptchaV2 from 'react-google-recaptcha';
+import { useForm } from 'react-hook-form';
 
 import { CLEAR_FORM, logInWithGoogle, signUp } from '../actions/userActions';
-import { GoogleButton } from './GoogleButton';
-import {
-  selectUserErrorMessage,
-  selectUserIsSignUpLoading,
-} from '../selectors/userSelectors';
-import { useAppDispatch, useAppSelector } from '../store';
-import {
-  CaptchaDiv,
-  ErrorMessage,
-  GoogleButtonDiv,
-  SubmitButtonDiv,
-} from '../styles/FormStyles';
-import { StyledLink } from '../styles/GlobalStyles';
 import {
   PASSWORD_MIN_LENGTH,
   PASSWORD_MIN_LENGTH_ERROR_MESSAGE,
@@ -25,6 +12,11 @@ import {
   VALID_EMAIL_FORM_ERROR_MESSAGE,
   VALID_EMAIL_REGEX,
 } from '../constants';
+import { GoogleButton } from './GoogleButton';
+import { selectUserErrorMessage, selectUserIsSignUpLoading } from '../selectors/userSelectors';
+import { useAppDispatch, useAppSelector } from '../store';
+import { CaptchaDiv, ErrorMessage, GoogleButtonDiv, SubmitButtonDiv } from '../styles/FormStyles';
+import { StyledLink } from '../styles/GlobalStyles';
 
 const defaultFormValues = {
   confirmPassword: '',
@@ -33,11 +25,7 @@ const defaultFormValues = {
   password: '',
 };
 
-export const SignupForm = ({
-  setSelectedForm,
-}: {
-  setSelectedForm: (form: string) => void;
-}) => {
+export const SignupForm = ({ setSelectedForm }: { setSelectedForm: (form: string) => void }) => {
   const {
     formState: { dirtyFields, errors },
     handleSubmit,
@@ -48,7 +36,6 @@ export const SignupForm = ({
     defaultValues: defaultFormValues,
   });
   const reCaptchaRef = useRef<ReCaptchaV2>(null);
-
   const dispatch = useAppDispatch();
   const signUpErrorMessage = useAppSelector(selectUserErrorMessage);
   const isSignUpLoading = useAppSelector(selectUserIsSignUpLoading);
@@ -66,16 +53,14 @@ export const SignupForm = ({
     dispatch(CLEAR_FORM());
   }, [dispatch]);
 
-  const handleSignUpClicked = handleSubmit(async ({ email, password }) =>
-    dispatch(signUp({ email, password }))
-  );
+  const handleSignUpClicked = handleSubmit(async ({ email, password }) => dispatch(signUp({ email, password })));
 
   return (
     <Card>
       <Card.Body>
         <Form noValidate onSubmit={handleSignUpClicked}>
-          <Form.Group className='mb-3'>
-            <Form.Label className='mb-1'>
+          <Form.Group className="mb-3">
+            <Form.Label className="mb-1">
               <b>Email *</b>
             </Form.Label>
             <Form.Control
@@ -89,13 +74,13 @@ export const SignupForm = ({
                   value: true,
                 },
               })}
-              placeholder='Enter email'
-              type='email'
+              placeholder="Enter email"
+              type="email"
             />
             <ErrorMessage>{errors.email && errors.email.message}</ErrorMessage>
           </Form.Group>
-          <Form.Group className='mb-3'>
-            <Form.Label className='mb-1'>
+          <Form.Group className="mb-3">
+            <Form.Label className="mb-1">
               <b>Password *</b>
             </Form.Label>
             <Form.Control
@@ -109,15 +94,13 @@ export const SignupForm = ({
                   value: true,
                 },
               })}
-              placeholder='Enter password'
-              type='password'
+              placeholder="Enter password"
+              type="password"
             />
-            <ErrorMessage>
-              {errors.password && errors.password.message}
-            </ErrorMessage>
+            <ErrorMessage>{errors.password && errors.password.message}</ErrorMessage>
           </Form.Group>
-          <Form.Group className='mb-3'>
-            <Form.Label className='mb-1'>
+          <Form.Group className="mb-3">
+            <Form.Label className="mb-1">
               <b>Confirm Password *</b>
             </Form.Label>
             <Form.Control
@@ -130,55 +113,42 @@ export const SignupForm = ({
                   message: REQUIRED_ERROR_MESSAGE,
                   value: true,
                 },
-                validate: (value: string) =>
-                  value === watch('password') ||
-                  PASSWORDS_MUST_MATCH_ERROR_MESSAGE,
+                validate: (value: string) => value === watch('password') || PASSWORDS_MUST_MATCH_ERROR_MESSAGE,
               })}
-              placeholder='Confirm pasword'
-              type='password'
+              placeholder="Confirm pasword"
+              type="password"
             />
-            <ErrorMessage>
-              {errors.confirmPassword && errors.confirmPassword.message}
-            </ErrorMessage>
+            <ErrorMessage>{errors.confirmPassword && errors.confirmPassword.message}</ErrorMessage>
           </Form.Group>
           <CaptchaDiv>
             <ReCaptchaV2
-              onChange={captchaValue =>
-                setValue('g-recaptcha-response', captchaValue || '')
-              }
+              onChange={(captchaValue) => setValue('g-recaptcha-response', captchaValue || '')}
               onExpired={() => setValue('g-recaptcha-response', '')}
               ref={reCaptchaRef}
               sitekey={process.env.REACT_APP_CAPTCHA_SITE_KEY || ''}
             />
-            <ErrorMessage>
-              {errors['g-recaptcha-response'] &&
-                errors['g-recaptcha-response'].message}
-            </ErrorMessage>
+            <ErrorMessage>{errors['g-recaptcha-response'] && errors['g-recaptcha-response'].message}</ErrorMessage>
           </CaptchaDiv>
           <SubmitButtonDiv>
             <Button
-              className='mb-2'
+              className="mb-2"
               disabled={
                 isSignUpLoading ||
                 !!Object.keys(errors).length ||
-                Object.keys(dirtyFields).length <
-                  --Object.keys(defaultFormValues).length ||
+                Object.keys(dirtyFields).length < --Object.keys(defaultFormValues).length ||
                 !watch('g-recaptcha-response')
               }
-              type='submit'
+              type="submit"
             >
               Sign Up
             </Button>
             {isSignUpLoading && <p>Signing up...</p>}
-            {!!signUpErrorMessage && (
-              <ErrorMessage>{signUpErrorMessage}</ErrorMessage>
-            )}
+            {!!signUpErrorMessage && <ErrorMessage>{signUpErrorMessage}</ErrorMessage>}
           </SubmitButtonDiv>
         </Form>
       </Card.Body>
-      <div className='mb-3 mt-2 text-center'>
-        Already have an account?{' '}
-        <StyledLink onClick={() => setSelectedForm('login')}>Log In</StyledLink>
+      <div className="mb-3 mt-2 text-center">
+        Already have an account? <StyledLink onClick={() => setSelectedForm('login')}>Log In</StyledLink>
       </div>
       <GoogleButtonDiv>
         <GoogleButton onClick={() => dispatch(logInWithGoogle())} />

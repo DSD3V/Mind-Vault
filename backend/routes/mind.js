@@ -24,7 +24,7 @@ router.get('/getMind', async (req, res) => {
     const vaultIdToVault = {};
     let mind = [];
 
-    queryResult.records.forEach(record => {
+    queryResult.records.forEach((record) => {
       const parentVault = {
         ...record._fields[0].properties,
         childVaults: [],
@@ -52,9 +52,7 @@ router.get('/getMind', async (req, res) => {
         vaultIdToVault[parentVaultId] = parentVault;
         vaultIdToVault[childVaultId] = childVault;
       } else {
-        vaultIdToVault[parentVaultId].thoughts.push(
-          record._fields[1].properties
-        );
+        vaultIdToVault[parentVaultId].thoughts.push(record._fields[1].properties);
       }
     });
 
@@ -72,13 +70,8 @@ router.get('/getMind', async (req, res) => {
   }
 });
 
-const getChildVaultsHelper = ({
-  childVaults,
-  vaultId,
-  vaultIdToChildVaultIds,
-  vaultIdToVault,
-}) => {
-  (vaultIdToChildVaultIds[vaultId] || []).forEach(childVaultId => {
+const getChildVaultsHelper = ({ childVaults, vaultId, vaultIdToChildVaultIds, vaultIdToVault }) => {
+  (vaultIdToChildVaultIds[vaultId] || []).forEach((childVaultId) => {
     childVaults.push(vaultIdToVault[childVaultId]);
     childVaults[childVaults.length - 1].childVaults = getChildVaultsHelper({
       childVaults: [],

@@ -57,9 +57,11 @@ router.get('/getMind', async (req, res) => {
     });
 
     for (let i = 0; i < mind.length; i++) {
+      const vaultId = mind[i].vaultId;
+      mind[i].thoughts = vaultIdToVault[vaultId].thoughts;
       mind[i].childVaults = getChildVaultsHelper({
         childVaults: [],
-        vaultId: mind[i].vaultId,
+        vaultId,
         vaultIdToChildVaultIds,
         vaultIdToVault,
       });

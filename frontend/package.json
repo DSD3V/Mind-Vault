@@ -54,7 +54,7 @@
   },
   "name": "frontend",
   "private": true,
-  "proxy": "http://localhost:5000/",
+  "proxy": "http://localhost:6000/",
   "scripts": {
     "build": "react-scripts build",
     "eject": "react-scripts eject",

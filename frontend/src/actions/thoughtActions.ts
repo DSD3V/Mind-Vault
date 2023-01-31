@@ -80,6 +80,7 @@ export const addThought =
       const {
         data: { newThought },
       } = await axios.post('/thought/addThought', null, {
+        maxContentLength: Infinity,
         params: {
           newThoughtHTML,
           orderIndex,

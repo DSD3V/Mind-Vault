@@ -1,5 +1,5 @@
-import { Router } from 'express';
 import stringifyObject from 'stringify-object';
+import { Router } from 'express';
 
 import { Thought } from '../schemas/Thought.js';
 import { session } from '../server.js';

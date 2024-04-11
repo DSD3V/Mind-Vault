@@ -2,7 +2,7 @@
 
 ### A full stack web application where a user can create an account or sign in with Google and recursively add, store, categorize, and edit thoughts, notes, quotes, etc. in vaults.
 
-### Access the application from any device and browser here: https://mind--vault.herokuapp.com/
+### Note: Site is no longer functional.
 
 #### Features:
 
